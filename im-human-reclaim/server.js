@@ -169,10 +169,49 @@ app.get('/api/reclaim/init', async (req, res) => {
 app.post('/api/reclaim/callback', async (req, res) => {
   try {
     console.log('Received callback from Reclaim Protocol');
+    console.log('Request body:', JSON.stringify(req.body, null, 2));
+    console.log('Request headers:', req.headers);
 
-    // Decode the proof
-    const decodedBody = decodeURIComponent(req.body);
-    const proofs = JSON.parse(decodedBody);
+    // Handle different body formats
+    let proofs;
+
+    if (typeof req.body === 'string') {
+      // If body is a string, try to decode and parse
+      const decodedBody = decodeURIComponent(req.body);
+      proofs = JSON.parse(decodedBody);
+    } else if (Array.isArray(req.body)) {
+      // If body is already an array
+      proofs = req.body;
+    } else if (req.body && typeof req.body === 'object') {
+      // If body is an object, check for common structures
+      if (req.body.proofs) {
+        proofs = req.body.proofs;
+      } else if (req.body.session) {
+        // Handle session update format
+        console.log('Session update received:', req.body);
+        const { sessionId, status } = req.body;
+
+        if (sessions.has(sessionId)) {
+          const session = sessions.get(sessionId);
+          session.status = status === 'PROOF_GENERATION_SUCCESS' ? 'PENDING' : status;
+          session.updatedAt = new Date();
+          sessions.set(sessionId, session);
+
+          console.log(`Session ${sessionId} updated to status: ${status}`);
+        }
+
+        return res.json({ success: true, message: 'Session updated' });
+      } else {
+        // Treat the whole body as a single proof
+        proofs = [req.body];
+      }
+    } else {
+      console.error('Invalid body format:', req.body);
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid request body format'
+      });
+    }
 
     if (!proofs || proofs.length === 0) {
       return res.status(400).json({
