@@ -149,7 +149,7 @@ app.get('/api/reclaim/init', async (req, res) => {
         requestUrl,
         statusUrl,
         sessionId,
-        proofRequest: reclaimProofRequest.toJsonString()
+        reclaimProofRequestConfig: reclaimProofRequest.toJsonString()
       }
     });
 

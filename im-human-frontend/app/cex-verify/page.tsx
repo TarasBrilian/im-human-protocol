@@ -1,113 +1,65 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import Navbar from "../components/Navbar";
-import Toast from "../components/Toast";
-import {
-  initReclaimVerification,
-  pollSessionStatus,
-  type SessionStatus,
-} from "../../lib/reclaim-api";
+import { useReclaim } from "../../hooks/useReclaim";
 
-type VerificationStep = "input" | "qr" | "verifying" | "success" | "error";
+type VerificationStep = "input" | "qr" | "success" | "error";
 
 export default function CexVerifyPage() {
   const [userId, setUserId] = useState("");
   const [walletAddress, setWalletAddress] = useState("");
   const [step, setStep] = useState<VerificationStep>("input");
-  const [isLoading, setIsLoading] = useState(false);
-  const [requestUrl, setRequestUrl] = useState("");
-  const [sessionId, setSessionId] = useState("");
-  const [kycData, setKycData] = useState<any>(null);
-  const [error, setError] = useState("");
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-  const [toastType, setToastType] = useState<"success" | "error" | "info">("success");
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+  const {
+    proofs,
+    isLoading,
+    error,
+    requestUrl,
+    startVerification,
+    reset
+  } = useReclaim();
+
+  // Watch for proofs changes from useReclaim hook
+  useEffect(() => {
+    if (proofs) {
+      setStep("success");
+      setShowSuccessModal(true);
+    }
+  }, [proofs]);
+
+  // Watch for error changes
+  useEffect(() => {
+    if (error && !isLoading) {
+      setStep("error");
+    }
+  }, [error, isLoading]);
+
+  // Watch for requestUrl changes
+  useEffect(() => {
+    if (requestUrl && !error) {
+      setStep("qr");
+    }
+  }, [requestUrl, error]);
 
   const handleStartVerification = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError("");
-
-    try {
-      // Initialize Reclaim verification
-      const response = await initReclaimVerification(
-        userId,
-        walletAddress || undefined
-      );
-
-      if (!response.success || !response.data) {
-        throw new Error(response.error || "Failed to initialize verification");
-      }
-
-      console.log("✅ Verification initialized successfully!");
-      console.log("Session ID:", response.data.sessionId);
-      console.log("Request URL:", response.data.requestUrl);
-
-      setRequestUrl(response.data.requestUrl);
-      setSessionId(response.data.sessionId);
-      setStep("qr");
-
-      // Start polling for status
-      console.log("🔄 Starting to poll session status...");
-      pollSessionStatus(
-        response.data.sessionId,
-        (status: SessionStatus) => {
-          console.log("📊 Polling update received:", status);
-
-          if (status.session?.status === "VERIFIED") {
-            console.log("✅ Status is VERIFIED! Showing success...");
-            setKycData(status.session.kycData);
-            setStep("success");
-            // Show success toast
-            setToastMessage("✅ Verification Successful!");
-            setToastType("success");
-            setShowToast(true);
-          } else if (status.session?.status === "FAILED") {
-            console.log("❌ Status is FAILED");
-            setError("Verification failed");
-            setStep("error");
-            // Show error toast
-            setToastMessage("❌ Verification Failed");
-            setToastType("error");
-            setShowToast(true);
-          } else if (status.error) {
-            console.log("❌ Error received:", status.error);
-            setError(status.error);
-            setStep("error");
-            // Show error toast
-            setToastMessage("❌ " + status.error);
-            setToastType("error");
-            setShowToast(true);
-          } else {
-            console.log("⏳ Status still pending:", status.session?.status);
-          }
-        }
-      );
-    } catch (err) {
-      console.error("❌ Error in handleStartVerification:", err);
-      setError(err instanceof Error ? err.message : "An error occurred");
-      setStep("error");
-    } finally {
-      setIsLoading(false);
-    }
+    await startVerification(userId, walletAddress || undefined);
   };
 
   const handleReset = () => {
     setStep("input");
     setUserId("");
     setWalletAddress("");
-    setRequestUrl("");
-    setSessionId("");
-    setKycData(null);
-    setError("");
+    setShowSuccessModal(false);
+    reset();
   };
 
   const openVerificationUrl = () => {
     if (requestUrl) {
       window.open(requestUrl, "_blank");
-      setStep("verifying");
     }
   };
 
@@ -115,13 +67,66 @@ export default function CexVerifyPage() {
     <>
       <Navbar />
 
-      {/* Toast Notification */}
-      {showToast && (
-        <Toast
-          message={toastMessage}
-          type={toastType}
-          onClose={() => setShowToast(false)}
-        />
+      {/* Success Modal Pop-up */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+          <div className="bg-white dark:bg-zinc-800 rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 animate-scale-in">
+            <div className="text-center">
+              {/* Success Icon with Animation */}
+              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-green-100 dark:bg-green-900 mb-6 animate-bounce">
+                <svg
+                  className="h-12 w-12 text-green-600 dark:text-green-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
+
+              {/* Success Message */}
+              <h2 className="text-3xl font-bold text-zinc-900 dark:text-zinc-50 mb-3">
+                Verification Successful!
+              </h2>
+              <p className="text-lg text-zinc-600 dark:text-zinc-400 mb-6">
+                Your identity has been successfully verified
+              </p>
+
+              {/* KYC Data Display */}
+              {proofs && proofs[0] && (
+                <div className="bg-zinc-50 dark:bg-zinc-700 rounded-lg p-4 mb-6 text-left">
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-zinc-600 dark:text-zinc-400">Proof ID:</span>
+                      <span className="font-medium text-zinc-900 dark:text-zinc-50 text-xs truncate max-w-[200px]">
+                        {proofs[0].identifier}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-zinc-600 dark:text-zinc-400">Status:</span>
+                      <span className="font-medium text-green-600 dark:text-green-400">
+                        Verified
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Close Button */}
+              <button
+                onClick={() => setShowSuccessModal(false)}
+                className="w-full px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors"
+              >
+                Continue
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       <div className="flex min-h-screen items-center justify-center bg-zinc-50 px-4 pt-16 dark:bg-zinc-900">
@@ -264,50 +269,8 @@ export default function CexVerifyPage() {
               </>
             )}
 
-            {/* Step 3: Verifying */}
-            {step === "verifying" && (
-              <>
-                <div className="text-center">
-                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900">
-                    <svg
-                      className="h-6 w-6 text-blue-600 dark:text-blue-400 animate-spin"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
-                  </div>
-                  <h2 className="mt-4 text-xl font-semibold text-zinc-900 dark:text-zinc-50">
-                    Verifying...
-                  </h2>
-                  <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-                    Please complete the verification on your device
-                  </p>
-                </div>
-
-                <button
-                  onClick={handleReset}
-                  className="mt-6 flex w-full justify-center rounded-md border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-700"
-                >
-                  Cancel
-                </button>
-              </>
-            )}
-
-            {/* Step 4: Success */}
-            {step === "success" && kycData && (
+            {/* Step 3: Success */}
+            {step === "success" && proofs && (
               <>
                 <div className="text-center">
                   <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900">
@@ -336,26 +299,26 @@ export default function CexVerifyPage() {
                 <div className="mt-6 space-y-3 rounded-md bg-zinc-50 p-4 dark:bg-zinc-700">
                   <div className="flex justify-between text-sm">
                     <span className="text-zinc-600 dark:text-zinc-400">
-                      Name:
+                      Proof ID:
                     </span>
-                    <span className="font-medium text-zinc-900 dark:text-zinc-50">
-                      {kycData.firstName} {kycData.lastName}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-zinc-600 dark:text-zinc-400">
-                      Date of Birth:
-                    </span>
-                    <span className="font-medium text-zinc-900 dark:text-zinc-50">
-                      {kycData.dob}
+                    <span className="font-medium text-zinc-900 dark:text-zinc-50 text-xs truncate">
+                      {proofs[0]?.identifier?.substring(0, 20)}...
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-zinc-600 dark:text-zinc-400">
-                      KYC Status:
+                      Provider:
+                    </span>
+                    <span className="font-medium text-zinc-900 dark:text-zinc-50">
+                      {proofs[0]?.provider || 'Binance'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-zinc-600 dark:text-zinc-400">
+                      Status:
                     </span>
                     <span className="font-medium text-green-600 dark:text-green-400">
-                      {kycData.kycStatus}
+                      Verified
                     </span>
                   </div>
                 </div>
@@ -369,7 +332,7 @@ export default function CexVerifyPage() {
               </>
             )}
 
-            {/* Step 5: Error */}
+            {/* Step 4: Error */}
             {step === "error" && (
               <>
                 <div className="text-center">

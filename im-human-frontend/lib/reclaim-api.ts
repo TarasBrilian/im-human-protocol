@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_RECLAIM_API_URL || 'http://localhost:3000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_RECLAIM_API_URL;
 
 export interface ReclaimInitResponse {
   success: boolean;
@@ -108,7 +108,7 @@ export async function pollSessionStatus(
   sessionId: string,
   onStatusChange: (status: SessionStatus) => void,
   intervalMs: number = 3000,
-  timeoutMs: number = 300000 // 5 minutes
+  timeoutMs: number = 300000
 ): Promise<void> {
   console.log(`🔄 pollSessionStatus started for session: ${sessionId}`);
   console.log(`📡 API Base URL: ${API_BASE_URL}`);
