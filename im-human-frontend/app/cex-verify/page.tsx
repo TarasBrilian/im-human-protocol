@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import Navbar from "../components/Navbar";
 import { useReclaim } from "../../hooks/useReclaim";
+import { saveVerification } from "../../lib/verification-storage";
 
 type VerificationStep = "input" | "qr" | "success" | "error";
 
@@ -25,10 +26,12 @@ export default function CexVerifyPage() {
   // Watch for proofs changes from useReclaim hook
   useEffect(() => {
     if (proofs) {
+      // Save verification to local storage
+      saveVerification(userId, proofs);
       setStep("success");
       setShowSuccessModal(true);
     }
-  }, [proofs]);
+  }, [proofs, userId]);
 
   // Watch for error changes
   useEffect(() => {
@@ -67,49 +70,56 @@ export default function CexVerifyPage() {
     <>
       <Navbar />
 
+      {/* Scanline effect */}
+      <div className="scanline" />
+
+      {/* Matrix rain background */}
+      <div className="matrix-rain" />
+
       {/* Success Modal Pop-up */}
       {showSuccessModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
-          <div className="bg-white dark:bg-zinc-800 rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 animate-scale-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md">
+          <div className="holographic rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 animate-scale-in border-2 border-[#00fff5]/30">
             <div className="text-center">
               {/* Success Icon with Animation */}
-              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-green-100 dark:bg-green-900 mb-6 animate-bounce">
+              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border-2 border-[#00fff5] bg-black/50 mb-6 animate-pulse-glow">
                 <svg
-                  className="h-12 w-12 text-green-600 dark:text-green-400"
+                  className="h-12 w-12 text-[#00fff5]"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
+                  strokeWidth={2}
                 >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth={2}
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
               </div>
 
               {/* Success Message */}
-              <h2 className="text-3xl font-bold text-zinc-900 dark:text-zinc-50 mb-3">
+              <h2 className="text-3xl font-bold text-white mb-3 gradient-text">
                 Verification Successful!
               </h2>
-              <p className="text-lg text-zinc-600 dark:text-zinc-400 mb-6">
+              <p className="text-lg text-gray-300 mb-6">
                 Your identity has been successfully verified
               </p>
 
               {/* KYC Data Display */}
               {proofs && proofs[0] && (
-                <div className="bg-zinc-50 dark:bg-zinc-700 rounded-lg p-4 mb-6 text-left">
+                <div className="glow-border rounded-lg p-4 mb-6 text-left bg-black/30">
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span className="text-zinc-600 dark:text-zinc-400">Proof ID:</span>
-                      <span className="font-medium text-zinc-900 dark:text-zinc-50 text-xs truncate max-w-[200px]">
+                      <span className="text-gray-400">Proof ID:</span>
+                      <span className="font-medium text-[#00fff5] text-xs truncate max-w-[200px] font-mono">
                         {proofs[0].identifier}
                       </span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-zinc-600 dark:text-zinc-400">Status:</span>
-                      <span className="font-medium text-green-600 dark:text-green-400">
+                      <span className="text-gray-400">Status:</span>
+                      <span className="font-bold text-[#00fff5] flex items-center gap-1">
+                        <div className="w-2 h-2 bg-[#00fff5] rounded-full animate-pulse"></div>
                         Verified
                       </span>
                     </div>
@@ -117,38 +127,57 @@ export default function CexVerifyPage() {
                 </div>
               )}
 
-              {/* Close Button */}
-              <button
-                onClick={() => setShowSuccessModal(false)}
-                className="w-full px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors"
-              >
-                Continue
-              </button>
+              {/* Action Buttons */}
+              <div className="space-y-3">
+                <button
+                  onClick={() => window.location.href = '/onchain-verify'}
+                  className="group relative w-full px-6 py-3 bg-transparent border-2 border-[#00fff5] text-[#00fff5] font-semibold rounded-lg transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,245,0.5)] uppercase tracking-wide overflow-hidden"
+                >
+                  <span className="relative z-10">Bind Wallet Address</span>
+                  <div className="absolute inset-0 bg-[#00fff5] opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                </button>
+                <button
+                  onClick={() => setShowSuccessModal(false)}
+                  className="group relative w-full px-6 py-3 border-2 border-gray-500 text-gray-300 font-semibold rounded-lg transition-all duration-300 hover:border-gray-400 hover:text-white uppercase tracking-wide overflow-hidden"
+                >
+                  <span className="relative z-10">Close</span>
+                  <div className="absolute inset-0 bg-gray-500 opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                </button>
+              </div>
             </div>
           </div>
         </div>
       )}
 
-      <div className="flex min-h-screen items-center justify-center bg-zinc-50 px-4 pt-16 dark:bg-zinc-900">
-        <div className="w-full max-w-md space-y-8">
+      <div className="flex min-h-screen items-center justify-center bg-black px-4 pt-16 relative">
+        <div className="w-full max-w-md space-y-8 relative z-10">
           <div className="text-center">
-            <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+            <div className="flex justify-center mb-6">
+              <div className="relative">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#00fff5] via-[#b600ff] to-[#ff00e5] opacity-20 blur-xl absolute top-0 left-0 animate-pulse"></div>
+                <svg className="w-16 h-16 relative z-10" fill="none" viewBox="0 0 24 24" stroke="#00fff5" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                </svg>
+              </div>
+            </div>
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white mb-3 gradient-text">
               Binance KYC Verification
             </h1>
-            <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-              Verify your identity using Reclaim Protocol
+            <p className="mt-2 text-sm text-gray-400">
+              Verify your identity using <span className="text-[#00fff5]">Reclaim Protocol</span>
             </p>
           </div>
 
-          <div className="rounded-lg bg-white px-8 py-10 shadow-lg dark:bg-zinc-800">
+          <div className="holographic rounded-2xl px-8 py-10 shadow-2xl">
             {/* Step 1: Input User ID */}
             {step === "input" && (
               <>
                 <div className="mb-6">
-                  <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50">
+                  <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                    <div className="w-2 h-2 bg-[#00fff5] rounded-full animate-pulse"></div>
                     Start Verification
                   </h2>
-                  <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                  <p className="mt-1 text-sm text-gray-400">
                     Enter your information to begin
                   </p>
                 </div>
@@ -157,9 +186,9 @@ export default function CexVerifyPage() {
                   <div>
                     <label
                       htmlFor="userId"
-                      className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                      className="block text-sm font-semibold text-[#00fff5] mb-2 uppercase tracking-wide"
                     >
-                      User ID <span className="text-red-500">*</span>
+                      User ID <span className="text-[#ff00e5]">*</span>
                     </label>
                     <input
                       id="userId"
@@ -168,7 +197,7 @@ export default function CexVerifyPage() {
                       required
                       value={userId}
                       onChange={(e) => setUserId(e.target.value)}
-                      className="mt-2 block w-full rounded-md border border-zinc-300 px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-50 dark:placeholder-zinc-500 dark:focus:border-zinc-400 dark:focus:ring-zinc-400"
+                      className="block w-full rounded-lg border border-[#00fff5]/30 bg-black/50 px-4 py-3 text-white placeholder-gray-500 focus:border-[#00fff5] focus:outline-none focus:ring-1 focus:ring-[#00fff5] transition-all font-mono"
                       placeholder="Enter your unique user ID"
                     />
                   </div>
@@ -176,7 +205,7 @@ export default function CexVerifyPage() {
                   <div>
                     <label
                       htmlFor="wallet"
-                      className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                      className="block text-sm font-semibold text-[#b600ff] mb-2 uppercase tracking-wide"
                     >
                       Wallet Address (Optional)
                     </label>
@@ -186,16 +215,16 @@ export default function CexVerifyPage() {
                       type="text"
                       value={walletAddress}
                       onChange={(e) => setWalletAddress(e.target.value)}
-                      className="mt-2 block w-full rounded-md border border-zinc-300 px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-50 dark:placeholder-zinc-500 dark:focus:border-zinc-400 dark:focus:ring-zinc-400"
+                      className="block w-full rounded-lg border border-[#b600ff]/30 bg-black/50 px-4 py-3 text-white placeholder-gray-500 focus:border-[#b600ff] focus:outline-none focus:ring-1 focus:ring-[#b600ff] transition-all font-mono"
                       placeholder="0x..."
                     />
                   </div>
 
-                  <div className="rounded-md bg-blue-50 p-4 dark:bg-blue-900/20">
-                    <div className="flex">
+                  <div className="rounded-lg glow-border p-4 bg-black/30">
+                    <div className="flex gap-3">
                       <div className="flex-shrink-0">
                         <svg
-                          className="h-5 w-5 text-blue-400"
+                          className="h-5 w-5 text-[#00fff5]"
                           viewBox="0 0 20 20"
                           fill="currentColor"
                         >
@@ -206,9 +235,9 @@ export default function CexVerifyPage() {
                           />
                         </svg>
                       </div>
-                      <div className="ml-3 flex-1">
-                        <p className="text-sm text-blue-700 dark:text-blue-300">
-                          Reclaim Protocol uses zero-knowledge proofs to verify
+                      <div className="flex-1">
+                        <p className="text-sm text-gray-300">
+                          Reclaim Protocol uses <span className="text-[#00fff5] font-bold">zero-knowledge proofs</span> to verify
                           your Binance KYC without exposing your credentials.
                         </p>
                       </div>
@@ -218,9 +247,10 @@ export default function CexVerifyPage() {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="flex w-full justify-center rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200 dark:focus:ring-zinc-400"
+                    className="group relative flex w-full justify-center rounded-lg bg-transparent border-2 border-[#00fff5] px-4 py-3 text-sm font-bold text-[#00fff5] hover:shadow-[0_0_30px_rgba(0,255,245,0.5)] focus:outline-none focus:ring-2 focus:ring-[#00fff5] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 uppercase tracking-wider overflow-hidden transition-all duration-300"
                   >
-                    {isLoading ? "Initializing..." : "Start Verification"}
+                    <span className="relative z-10">{isLoading ? "Initializing..." : "Start Verification"}</span>
+                    <div className="absolute inset-0 bg-[#00fff5] opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
                   </button>
                 </form>
               </>
@@ -230,16 +260,17 @@ export default function CexVerifyPage() {
             {step === "qr" && (
               <>
                 <div className="mb-6 text-center">
-                  <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50">
+                  <h2 className="text-xl font-bold text-white flex items-center justify-center gap-2">
+                    <div className="w-2 h-2 bg-[#b600ff] rounded-full animate-pulse"></div>
                     Scan QR Code
                   </h2>
-                  <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                  <p className="mt-1 text-sm text-gray-400">
                     Scan with your mobile device or click to open
                   </p>
                 </div>
 
                 <div className="flex justify-center mb-6">
-                  <div className="bg-white p-4 rounded-lg">
+                  <div className="glow-border bg-white p-4 rounded-lg animate-pulse-glow">
                     <QRCodeSVG value={requestUrl} size={256} />
                   </div>
                 </div>
@@ -247,24 +278,29 @@ export default function CexVerifyPage() {
                 <div className="space-y-3">
                   <button
                     onClick={openVerificationUrl}
-                    className="flex w-full justify-center rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+                    className="group relative flex w-full justify-center rounded-lg bg-transparent border-2 border-[#00fff5] px-4 py-3 text-sm font-bold text-[#00fff5] hover:shadow-[0_0_30px_rgba(0,255,245,0.5)] focus:outline-none uppercase tracking-wider overflow-hidden transition-all duration-300"
                   >
-                    Open Verification Page
+                    <span className="relative z-10">Open Verification Page</span>
+                    <div className="absolute inset-0 bg-[#00fff5] opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
                   </button>
 
                   <button
                     onClick={handleReset}
-                    className="flex w-full justify-center rounded-md border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-700"
+                    className="group relative flex w-full justify-center rounded-lg border-2 border-gray-500 px-4 py-3 text-sm font-semibold text-gray-300 hover:border-gray-400 hover:text-white uppercase tracking-wide overflow-hidden transition-all duration-300"
                   >
-                    Cancel
+                    <span className="relative z-10">Cancel</span>
+                    <div className="absolute inset-0 bg-gray-500 opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
                   </button>
                 </div>
 
-                <div className="mt-6 rounded-md bg-yellow-50 p-4 dark:bg-yellow-900/20">
-                  <p className="text-sm text-yellow-700 dark:text-yellow-300">
-                    Waiting for verification... This page will update
-                    automatically once completed.
-                  </p>
+                <div className="mt-6 rounded-lg border border-[#ff00e5]/30 bg-black/30 p-4">
+                  <div className="flex gap-3">
+                    <div className="w-2 h-2 bg-[#ff00e5] rounded-full animate-pulse mt-1"></div>
+                    <p className="text-sm text-gray-300">
+                      Waiting for verification... This page will update
+                      automatically once completed.
+                    </p>
+                  </div>
                 </div>
               </>
             )}
@@ -273,51 +309,52 @@ export default function CexVerifyPage() {
             {step === "success" && proofs && (
               <>
                 <div className="text-center">
-                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900">
+                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-2 border-[#00fff5] bg-black/50 animate-pulse-glow">
                     <svg
-                      className="h-6 w-6 text-green-600 dark:text-green-400"
+                      className="h-8 w-8 text-[#00fff5]"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
+                      strokeWidth={2}
                     >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth={2}
                         d="M5 13l4 4L19 7"
                       />
                     </svg>
                   </div>
-                  <h2 className="mt-4 text-xl font-semibold text-zinc-900 dark:text-zinc-50">
+                  <h2 className="mt-4 text-xl font-bold text-white gradient-text">
                     Verification Successful!
                   </h2>
-                  <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+                  <p className="mt-2 text-sm text-gray-300">
                     Your Binance KYC has been verified
                   </p>
                 </div>
 
-                <div className="mt-6 space-y-3 rounded-md bg-zinc-50 p-4 dark:bg-zinc-700">
+                <div className="mt-6 space-y-3 rounded-lg glow-border p-4 bg-black/30">
                   <div className="flex justify-between text-sm">
-                    <span className="text-zinc-600 dark:text-zinc-400">
+                    <span className="text-gray-400">
                       Proof ID:
                     </span>
-                    <span className="font-medium text-zinc-900 dark:text-zinc-50 text-xs truncate">
+                    <span className="font-medium text-[#00fff5] text-xs truncate font-mono">
                       {proofs[0]?.identifier?.substring(0, 20)}...
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-zinc-600 dark:text-zinc-400">
+                    <span className="text-gray-400">
                       Provider:
                     </span>
-                    <span className="font-medium text-zinc-900 dark:text-zinc-50">
+                    <span className="font-medium text-white">
                       {proofs[0]?.provider || 'Binance'}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-zinc-600 dark:text-zinc-400">
+                    <span className="text-gray-400">
                       Status:
                     </span>
-                    <span className="font-medium text-green-600 dark:text-green-400">
+                    <span className="font-bold text-[#00fff5] flex items-center gap-1">
+                      <div className="w-2 h-2 bg-[#00fff5] rounded-full animate-pulse"></div>
                       Verified
                     </span>
                   </div>
@@ -325,9 +362,10 @@ export default function CexVerifyPage() {
 
                 <button
                   onClick={handleReset}
-                  className="mt-6 flex w-full justify-center rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+                  className="group relative mt-6 flex w-full justify-center rounded-lg bg-transparent border-2 border-[#00fff5] px-4 py-3 text-sm font-bold text-[#00fff5] hover:shadow-[0_0_30px_rgba(0,255,245,0.5)] uppercase tracking-wider overflow-hidden transition-all duration-300"
                 >
-                  Verify Another Account
+                  <span className="relative z-10">Verify Another Account</span>
+                  <div className="absolute inset-0 bg-[#00fff5] opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
                 </button>
               </>
             )}
@@ -336,34 +374,35 @@ export default function CexVerifyPage() {
             {step === "error" && (
               <>
                 <div className="text-center">
-                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900">
+                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-2 border-[#ff00e5] bg-black/50">
                     <svg
-                      className="h-6 w-6 text-red-600 dark:text-red-400"
+                      className="h-8 w-8 text-[#ff00e5]"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
+                      strokeWidth={2}
                     >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth={2}
                         d="M6 18L18 6M6 6l12 12"
                       />
                     </svg>
                   </div>
-                  <h2 className="mt-4 text-xl font-semibold text-zinc-900 dark:text-zinc-50">
+                  <h2 className="mt-4 text-xl font-bold text-white">
                     Verification Failed
                   </h2>
-                  <p className="mt-2 text-sm text-red-600 dark:text-red-400">
+                  <p className="mt-2 text-sm text-[#ff00e5] border border-[#ff00e5]/30 rounded-lg p-3 bg-black/30">
                     {error || "An error occurred during verification"}
                   </p>
                 </div>
 
                 <button
                   onClick={handleReset}
-                  className="mt-6 flex w-full justify-center rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+                  className="group relative mt-6 flex w-full justify-center rounded-lg bg-transparent border-2 border-[#ff00e5] px-4 py-3 text-sm font-bold text-[#ff00e5] hover:shadow-[0_0_30px_rgba(255,0,229,0.5)] uppercase tracking-wider overflow-hidden transition-all duration-300"
                 >
-                  Try Again
+                  <span className="relative z-10">Try Again</span>
+                  <div className="absolute inset-0 bg-[#ff00e5] opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
                 </button>
               </>
             )}
@@ -371,11 +410,11 @@ export default function CexVerifyPage() {
             <div className="mt-6">
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-zinc-300 dark:border-zinc-700" />
+                  <div className="w-full h-px bg-gradient-to-r from-transparent via-[#00fff5]/30 to-transparent" />
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="bg-white px-2 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
-                    Powered by Reclaim Protocol
+                  <span className="bg-black px-3 text-gray-400 font-mono text-xs">
+                    Powered by <span className="text-[#00fff5]">Reclaim Protocol</span>
                   </span>
                 </div>
               </div>
@@ -383,7 +422,7 @@ export default function CexVerifyPage() {
               <div className="mt-6 text-center">
                 <a
                   href="/"
-                  className="text-sm font-medium text-zinc-900 hover:text-zinc-700 dark:text-zinc-50 dark:hover:text-zinc-300"
+                  className="text-sm font-semibold text-[#00fff5] hover:text-[#b600ff] transition-colors uppercase tracking-wide"
                 >
                   ← Back to Home
                 </a>

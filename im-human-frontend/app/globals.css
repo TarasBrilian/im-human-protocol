@@ -1,8 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #000000;
+  --foreground: #ffffff;
+  --neon-cyan: #00fff5;
+  --neon-purple: #b600ff;
+  --neon-pink: #ff00e5;
+  --neon-blue: #0066ff;
 }
 
 @theme inline {
@@ -12,19 +16,152 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+body {
+  background: #000000;
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Glowing grid background */
+.grid-background {
+  background-image:
+    linear-gradient(rgba(0, 255, 245, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 245, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+  position: relative;
+}
+
+.grid-background::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(0, 255, 245, 0.03), transparent 50%);
+  pointer-events: none;
+}
+
+/* Animated gradient text */
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.gradient-text {
+  background: linear-gradient(90deg, #00fff5, #b600ff, #ff00e5, #00fff5);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift 3s ease infinite;
 }
 
+/* Glowing borders */
+.glow-border {
+  position: relative;
+  border: 1px solid rgba(0, 255, 245, 0.3);
+  box-shadow:
+    0 0 10px rgba(0, 255, 245, 0.2),
+    inset 0 0 10px rgba(0, 255, 245, 0.05);
+}
+
+.glow-border-purple {
+  position: relative;
+  border: 1px solid rgba(182, 0, 255, 0.3);
+  box-shadow:
+    0 0 10px rgba(182, 0, 255, 0.2),
+    inset 0 0 10px rgba(182, 0, 255, 0.05);
+}
+
+.glow-border-pink {
+  position: relative;
+  border: 1px solid rgba(255, 0, 229, 0.3);
+  box-shadow:
+    0 0 10px rgba(255, 0, 229, 0.2),
+    inset 0 0 10px rgba(255, 0, 229, 0.05);
+}
+
+/* Floating animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Pulse glow animation */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(0, 255, 245, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(0, 255, 245, 0.8);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Slide in from bottom */
+@keyframes slide-up {
+  from {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.8s ease-out forwards;
+}
+
+/* Fade in animation */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 1s ease-out forwards;
+}
+
+/* Scale in animation */
+@keyframes scale-in {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-scale-in {
+  animation: scale-in 0.6s ease-out forwards;
+}
+
+/* Slide in from right */
 @keyframes slide-in {
   from {
     transform: translateX(100%);
@@ -40,17 +177,167 @@ body {
   animation: slide-in 0.3s ease-out;
 }
 
-@keyframes scale-in {
-  from {
-    transform: scale(0.8);
-    opacity: 0;
+/* Rotating border animation */
+@keyframes rotate-border {
+  0% {
+    transform: rotate(0deg);
   }
-  to {
-    transform: scale(1);
-    opacity: 1;
+  100% {
+    transform: rotate(360deg);
   }
 }
 
-.animate-scale-in {
-  animation: scale-in 0.3s ease-out;
+.rotating-border {
+  position: relative;
+}
+
+.rotating-border::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(45deg, #00fff5, #b600ff, #ff00e5, #00fff5);
+  border-radius: inherit;
+  animation: rotate-border 4s linear infinite;
+  opacity: 0.5;
+  z-index: -1;
+  background-size: 400% 400%;
+}
+
+/* Scanline effect */
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+.scanline {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(transparent, rgba(0, 255, 245, 0.3), transparent);
+  pointer-events: none;
+  animation: scanline 8s linear infinite;
+  z-index: 1000;
+}
+
+/* Glitch effect for hover states */
+@keyframes glitch {
+  0% {
+    text-shadow: 2px 2px #00fff5, -2px -2px #ff00e5;
+  }
+  25% {
+    text-shadow: -2px -2px #00fff5, 2px 2px #ff00e5;
+  }
+  50% {
+    text-shadow: 2px -2px #00fff5, -2px 2px #ff00e5;
+  }
+  75% {
+    text-shadow: -2px 2px #00fff5, 2px -2px #ff00e5;
+  }
+  100% {
+    text-shadow: 2px 2px #00fff5, -2px -2px #ff00e5;
+  }
+}
+
+.glitch:hover {
+  animation: glitch 0.3s ease-in-out infinite;
+}
+
+/* Matrix rain effect background element */
+.matrix-rain {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.03;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 255, 245, 0.1) 2px,
+      rgba(0, 255, 245, 0.1) 4px
+    );
+  animation: matrix-scroll 20s linear infinite;
+}
+
+@keyframes matrix-scroll {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 100vh;
+  }
+}
+
+/* Neon button styles */
+.neon-button {
+  position: relative;
+  padding: 1rem 2rem;
+  background: transparent;
+  border: 2px solid #00fff5;
+  color: #00fff5;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.neon-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 255, 245, 0.1);
+  transition: left 0.3s ease;
+}
+
+.neon-button:hover::before {
+  left: 0;
+}
+
+.neon-button:hover {
+  box-shadow:
+    0 0 20px rgba(0, 255, 245, 0.5),
+    inset 0 0 20px rgba(0, 255, 245, 0.2);
+  text-shadow: 0 0 10px rgba(0, 255, 245, 0.8);
+}
+
+/* Stagger animation delays */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+.stagger-6 { animation-delay: 0.6s; }
+
+/* Holographic card effect */
+.holographic {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 255, 245, 0.05) 0%,
+    rgba(182, 0, 255, 0.05) 50%,
+    rgba(255, 0, 229, 0.05) 100%
+  );
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 255, 245, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.holographic:hover {
+  transform: translateY(-5px);
+  box-shadow:
+    0 10px 30px rgba(0, 255, 245, 0.2),
+    0 5px 15px rgba(182, 0, 255, 0.2);
 }
