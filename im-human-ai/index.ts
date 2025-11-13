@@ -2,8 +2,8 @@ import axios from 'axios';
 
 const options = {
   method: 'GET',
-  url: 'https://api.blockberry.one/walrus-mainnet/v1/accounts/0x57956585e6595965e92a297119e7f6fe3b76ce62297ba61cabe91751ea32c3d2',
-  headers: {accept: '*/*', 'x-api-key': 'YH9XIU8b2vyXyQyXLPjo5IGIICsyXN'}
+  url: 'https://api.blockvision.org/v2/sui/account/activities?address=0x4f21032bd4257c2d67a8f7c7bf8055f3c9516b57bb777cb0a724bb16adff63df&limit=20',
+  headers: {accept: 'application/json', 'x-api-key': '35NQgsg94SvGraNug4Q304TQs4Z'}
 };
 
 axios

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { QRCodeSVG } from "qrcode.react";
+import { useCurrentAccount } from "@mysten/dapp-kit";
 import Navbar from "../components/Navbar";
 import { useReclaim } from "../../hooks/useReclaim";
 import { saveVerification } from "../../lib/verification-storage";
@@ -9,8 +10,8 @@ import { saveVerification } from "../../lib/verification-storage";
 type VerificationStep = "input" | "qr" | "success" | "error";
 
 export default function CexVerifyPage() {
+  const currentAccount = useCurrentAccount();
   const [userId, setUserId] = useState("");
-  const [walletAddress, setWalletAddress] = useState("");
   const [step, setStep] = useState<VerificationStep>("input");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
@@ -49,13 +50,12 @@ export default function CexVerifyPage() {
 
   const handleStartVerification = async (e: React.FormEvent) => {
     e.preventDefault();
-    await startVerification(userId, walletAddress || undefined);
+    await startVerification(userId, currentAccount?.address || undefined);
   };
 
   const handleReset = () => {
     setStep("input");
     setUserId("");
-    setWalletAddress("");
     setShowSuccessModal(false);
     reset();
   };
@@ -202,23 +202,23 @@ export default function CexVerifyPage() {
                     />
                   </div>
 
-                  <div>
-                    <label
-                      htmlFor="wallet"
-                      className="block text-sm font-semibold text-[#b600ff] mb-2 uppercase tracking-wide"
-                    >
-                      Wallet Address (Optional)
-                    </label>
-                    <input
-                      id="wallet"
-                      name="wallet"
-                      type="text"
-                      value={walletAddress}
-                      onChange={(e) => setWalletAddress(e.target.value)}
-                      className="block w-full rounded-lg border border-[#b600ff]/30 bg-black/50 px-4 py-3 text-white placeholder-gray-500 focus:border-[#b600ff] focus:outline-none focus:ring-1 focus:ring-[#b600ff] transition-all font-mono"
-                      placeholder="0x..."
-                    />
-                  </div>
+                  {currentAccount?.address && (
+                    <div>
+                      <label
+                        htmlFor="wallet"
+                        className="block text-sm font-semibold text-[#b600ff] mb-2 uppercase tracking-wide"
+                      >
+                        Connected Wallet Address
+                      </label>
+                      <div className="block w-full rounded-lg border border-[#b600ff]/30 bg-black/50 px-4 py-3 text-[#b600ff] font-mono text-sm flex items-center gap-2">
+                        <div className="w-2 h-2 bg-[#b600ff] rounded-full animate-pulse"></div>
+                        <span className="truncate">{currentAccount.address}</span>
+                      </div>
+                      <p className="mt-1 text-xs text-gray-400">
+                        This address will be linked to your verification
+                      </p>
+                    </div>
+                  )}
 
                   <div className="rounded-lg glow-border p-4 bg-black/30">
                     <div className="flex gap-3">

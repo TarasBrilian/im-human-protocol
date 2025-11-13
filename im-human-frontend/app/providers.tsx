@@ -10,9 +10,7 @@ const queryClient = new QueryClient();
 
 // Configure networks
 const networks = {
-  testnet: { url: getFullnodeUrl("testnet") },
-  mainnet: { url: getFullnodeUrl("mainnet") },
-  devnet: { url: getFullnodeUrl("devnet") },
+  testnet: { url: getFullnodeUrl("testnet") }
 };
 
 export function Providers({ children }: { children: React.ReactNode }) {
