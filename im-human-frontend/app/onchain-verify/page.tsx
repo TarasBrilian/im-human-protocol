@@ -9,7 +9,8 @@ import {
   bindAddress,
   isAddressBound,
 } from "../../lib/verification-storage";
-import { fetchUserActivities } from "./index";
+import { analyzeUserTransactions } from "./index";
+import type { AnalysisResult } from "./index";
 
 export default function OnchainVerifyPage() {
   const currentAccount = useCurrentAccount();
@@ -22,6 +23,8 @@ export default function OnchainVerifyPage() {
   const [isBinding, setIsBinding] = useState(false);
   const [bindError, setBindError] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
 
   // Check verification status and address binding
   useEffect(() => {
@@ -43,7 +46,7 @@ export default function OnchainVerifyPage() {
     setBindError(null);
 
     try {
-      const message = `Bind wallet address to Im Human verification\n\nAddress: ${currentAccount.address}\nUser ID: ${verificationData.userId}\nTimestamp: ${Date.now()}`;
+      const message = `Bind wallet address to Im Human verification\n\nAddress: ${currentAccount.address}\nSources: ${verificationData.userId}\nTimestamp: ${Date.now()}`;
       const messageBytes = new TextEncoder().encode(message);
       const { signature } = await signPersonalMessage({ message: messageBytes });
 
@@ -64,14 +67,19 @@ export default function OnchainVerifyPage() {
     if (!currentAccount?.address) return;
 
     setIsAnalyzing(true);
+    setAnalysisError(null);
 
     try {
-      console.log("Fetching activities for address:", currentAccount.address);
+      console.log("Analyzing transactions for address:", currentAccount.address);
 
-      // Call fetchUserActivities - it will log to console directly
-      await fetchUserActivities(currentAccount.address);
+      // Call the main analysis function
+      const result = await analyzeUserTransactions(currentAccount.address);
+
+      console.log("Analysis complete:", result);
+      setAnalysisResult(result);
     } catch (error: any) {
       console.error('Error analyzing address:', error);
+      setAnalysisError(error.message || 'Failed to analyze transactions. Please try again.');
     } finally {
       setIsAnalyzing(false);
     }
@@ -162,7 +170,7 @@ export default function OnchainVerifyPage() {
                   </div>
                   {hasVerification && verificationData && (
                     <div className="mt-2 text-xs text-gray-400 font-mono">
-                      User ID: <span className="text-white">{verificationData.userId}</span>
+                      Sources: <span className="text-white">{verificationData.userId}</span>
                     </div>
                   )}
                 </div>
@@ -231,21 +239,90 @@ export default function OnchainVerifyPage() {
                 </>
               )}
 
-              {/* Activity Status */}
-              <div>
-                <label className="block text-sm font-semibold text-[#b600ff] mb-2 uppercase tracking-wide">
-                  Activity Status
-                </label>
-                <div className="mt-2 rounded-lg border border-gray-600/30 bg-black/30 px-4 py-6 text-center">
-                  <div className="text-gray-400">
-                    <svg className="mx-auto h-12 w-12 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    <p className="text-sm">Click &quot;Analyze&quot; to fetch your activity data</p>
-                    <p className="text-xs text-gray-500 mt-2">Check browser console for results</p>
+              {/* Analysis Results */}
+              {analysisResult ? (
+                <div>
+                  <label className="block text-sm font-semibold text-[#b600ff] mb-2 uppercase tracking-wide">
+                    Analysis Results
+                  </label>
+
+                  {/* Human Score Display */}
+                  <div className="mt-2 rounded-lg border border-[#00fff5]/50 bg-black/50 glow-border p-6">
+                    <div className="text-center mb-4">
+                      <div className="text-6xl font-bold gradient-text mb-2">
+                        {analysisResult.humanScore}
+                      </div>
+                      <div className="text-sm text-gray-400 uppercase tracking-wider">Human Score</div>
+                    </div>
+
+                    {/* Stats Grid */}
+                    <div className="grid grid-cols-3 gap-4 mb-4">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-white">{analysisResult.totalTransactions}</div>
+                        <div className="text-xs text-gray-400 uppercase tracking-wide">Total</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-[#00fff5]">{analysisResult.successfulTransactions}</div>
+                        <div className="text-xs text-gray-400 uppercase tracking-wide">Success</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-[#ff00e5]">{analysisResult.failedTransactions}</div>
+                        <div className="text-xs text-gray-400 uppercase tracking-wide">Failed</div>
+                      </div>
+                    </div>
+
+                    {/* Success Rate Bar */}
+                    <div className="mb-4">
+                      <div className="flex justify-between text-xs text-gray-400 mb-1">
+                        <span>Success Rate</span>
+                        <span>{analysisResult.successRate.toFixed(1)}%</span>
+                      </div>
+                      <div className="w-full bg-gray-800 rounded-full h-2">
+                        <div
+                          className="h-2 rounded-full bg-gradient-to-r from-[#b600ff] to-[#00fff5]"
+                          style={{ width: `${analysisResult.successRate}%` }}
+                        ></div>
+                      </div>
+                    </div>
+
+                    {/* AI Analysis */}
+                    <div className="rounded-lg bg-black/50 border border-[#b600ff]/30 p-4">
+                      <div className="flex gap-2 mb-2">
+                        <svg className="w-5 h-5 text-[#b600ff] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                        </svg>
+                        <div className="text-xs font-bold text-[#b600ff] uppercase tracking-wide">AI Analysis</div>
+                      </div>
+                      <p className="text-sm text-gray-300 leading-relaxed">{analysisResult.aiAnalysis}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              ) : (
+                <div>
+                  <label className="block text-sm font-semibold text-[#b600ff] mb-2 uppercase tracking-wide">
+                    Activity Status
+                  </label>
+                  <div className="mt-2 rounded-lg border border-gray-600/30 bg-black/30 px-4 py-6 text-center">
+                    <div className="text-gray-400">
+                      <svg className="mx-auto h-12 w-12 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      <p className="text-sm">Click &quot;Analyze&quot; to start the AI analysis</p>
+                      <p className="text-xs text-gray-500 mt-2">We&apos;ll analyze your transaction patterns</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Analysis Error */}
+              {analysisError && (
+                <div className="rounded-lg border border-[#ff00e5]/30 bg-black/30 p-4">
+                  <div className="flex gap-3">
+                    <div className="w-2 h-2 bg-[#ff00e5] rounded-full animate-pulse mt-1"></div>
+                    <p className="text-sm text-[#ff00e5]">{analysisError}</p>
+                  </div>
+                </div>
+              )}
 
               {/* Analyze Button */}
               <button
@@ -300,7 +377,7 @@ export default function OnchainVerifyPage() {
                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                   </svg>
                   <p className="text-sm text-gray-300">
-                    Click analyze to fetch your onchain activity data from BlockVision API. The results will be displayed in the browser console.
+                    Click analyze to fetch your onchain transaction data from the Sui blockchain. Our AI will analyze your transaction patterns and calculate a human behavior score.
                   </p>
                 </div>
               </div>
