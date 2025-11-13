@@ -9,9 +9,57 @@ import { saveVerification } from "../../lib/verification-storage";
 
 type VerificationStep = "input" | "qr" | "success" | "error";
 
+type CEX = "binance" | "bybit" | "okx" | "bitget" | "mexc" | "coinbase";
+
+interface CEXOption {
+  id: CEX;
+  name: string;
+  logoUrl: string;
+  enabled: boolean;
+}
+
+const cexOptions: CEXOption[] = [
+  {
+    id: "binance",
+    name: "Binance",
+    logoUrl: "https://cdn.worldvectorlogo.com/logos/binance.svg",
+    enabled: true
+  },
+  {
+    id: "bybit",
+    name: "Bybit",
+    logoUrl: "https://images.seeklogo.com/logo-png/41/1/bybit-logo-png_seeklogo-412982.png",
+    enabled: false
+  },
+  {
+    id: "okx",
+    name: "OKX",
+    logoUrl: "https://images.seeklogo.com/logo-png/45/1/okx-logo-png_seeklogo-459094.png",
+    enabled: false
+  },
+  {
+    id: "bitget",
+    name: "Bitget",
+    logoUrl: "https://images.seeklogo.com/logo-png/47/1/bitget-logo-png_seeklogo-475574.png",
+    enabled: false
+  },
+  {
+    id: "mexc",
+    name: "MEXC",
+    logoUrl: "https://s3-symbol-logo.tradingview.com/provider/mexc--big.svg",
+    enabled: false
+  },
+  {
+    id: "coinbase",
+    name: "Coinbase",
+    logoUrl: "https://cdn.worldvectorlogo.com/logos/coinbase-1.svg",
+    enabled: false
+  },
+];
+
 export default function CexVerifyPage() {
   const currentAccount = useCurrentAccount();
-  const [userId, setUserId] = useState("");
+  const [selectedCex, setSelectedCex] = useState<CEX | null>(null);
   const [step, setStep] = useState<VerificationStep>("input");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
@@ -26,13 +74,13 @@ export default function CexVerifyPage() {
 
   // Watch for proofs changes from useReclaim hook
   useEffect(() => {
-    if (proofs) {
+    if (proofs && selectedCex) {
       // Save verification to local storage
-      saveVerification(userId, proofs);
+      saveVerification(selectedCex, proofs);
       setStep("success");
       setShowSuccessModal(true);
     }
-  }, [proofs, userId]);
+  }, [proofs, selectedCex]);
 
   // Watch for error changes
   useEffect(() => {
@@ -48,14 +96,19 @@ export default function CexVerifyPage() {
     }
   }, [requestUrl, error]);
 
+  const handleCexSelection = (cex: CEX) => {
+    setSelectedCex(cex);
+  };
+
   const handleStartVerification = async (e: React.FormEvent) => {
     e.preventDefault();
-    await startVerification(userId, currentAccount?.address || undefined);
+    if (!selectedCex) return;
+    await startVerification(selectedCex, currentAccount?.address || undefined);
   };
 
   const handleReset = () => {
     setStep("input");
-    setUserId("");
+    setSelectedCex(null);
     setShowSuccessModal(false);
     reset();
   };
@@ -161,7 +214,7 @@ export default function CexVerifyPage() {
               </div>
             </div>
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white mb-3 gradient-text">
-              Binance KYC Verification
+              CEX KYC Verification
             </h1>
             <p className="mt-2 text-sm text-gray-400">
               Verify your identity using <span className="text-[#00fff5]">Reclaim Protocol</span>
@@ -169,7 +222,7 @@ export default function CexVerifyPage() {
           </div>
 
           <div className="holographic rounded-2xl px-8 py-10 shadow-2xl">
-            {/* Step 1: Input User ID */}
+            {/* Step 1: Select CEX */}
             {step === "input" && (
               <>
                 <div className="mb-6">
@@ -178,31 +231,58 @@ export default function CexVerifyPage() {
                     Start Verification
                   </h2>
                   <p className="mt-1 text-sm text-gray-400">
-                    Enter your information to begin
+                    Select your exchange to begin
                   </p>
                 </div>
 
                 <form onSubmit={handleStartVerification} className="space-y-6">
                   <div>
                     <label
-                      htmlFor="userId"
-                      className="block text-sm font-semibold text-[#00fff5] mb-2 uppercase tracking-wide"
+                      className="block text-sm font-semibold text-[#00fff5] mb-4 uppercase tracking-wide"
                     >
-                      User ID <span className="text-[#ff00e5]">*</span>
+                      Choose Exchange <span className="text-[#ff00e5]">*</span>
                     </label>
-                    <input
-                      id="userId"
-                      name="userId"
-                      type="text"
-                      required
-                      value={userId}
-                      onChange={(e) => setUserId(e.target.value)}
-                      className="block w-full rounded-lg border border-[#00fff5]/30 bg-black/50 px-4 py-3 text-white placeholder-gray-500 focus:border-[#00fff5] focus:outline-none focus:ring-1 focus:ring-[#00fff5] transition-all font-mono"
-                      placeholder="Enter your unique user ID"
-                    />
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      {cexOptions.map((cex) => (
+                        <button
+                          key={cex.id}
+                          type="button"
+                          disabled={!cex.enabled}
+                          onClick={() => handleCexSelection(cex.id)}
+                          className={`relative group px-4 py-6 rounded-lg border-2 transition-all duration-300 ${
+                            selectedCex === cex.id
+                              ? "border-[#00fff5] bg-[#00fff5]/10 shadow-[0_0_20px_rgba(0,255,245,0.3)]"
+                              : cex.enabled
+                              ? "border-[#00fff5]/30 bg-black/50 hover:border-[#00fff5] hover:bg-[#00fff5]/5"
+                              : "border-gray-600/30 bg-gray-900/30 cursor-not-allowed opacity-50"
+                          }`}
+                          title={!cex.enabled ? "Coming Soon" : ""}
+                        >
+                          <div className="flex flex-col items-center gap-3">
+                            <img
+                              src={cex.logoUrl}
+                              alt={`${cex.name} logo`}
+                              className="w-12 h-12 object-contain"
+                            />
+                            <span className={`font-bold text-sm uppercase tracking-wide ${
+                              selectedCex === cex.id ? "text-[#00fff5]" : cex.enabled ? "text-white" : "text-gray-500"
+                            }`}>
+                              {cex.name}
+                            </span>
+                            {!cex.enabled && (
+                              <span className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <span className="bg-black/90 text-[#ff00e5] text-xs font-bold px-3 py-1 rounded-full border border-[#ff00e5]/50">
+                                  COMING SOON
+                                </span>
+                              </span>
+                            )}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
                   </div>
 
-                  {currentAccount?.address && (
+                  {currentAccount?.address && selectedCex && (
                     <div>
                       <label
                         htmlFor="wallet"
@@ -220,33 +300,35 @@ export default function CexVerifyPage() {
                     </div>
                   )}
 
-                  <div className="rounded-lg glow-border p-4 bg-black/30">
-                    <div className="flex gap-3">
-                      <div className="flex-shrink-0">
-                        <svg
-                          className="h-5 w-5 text-[#00fff5]"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-sm text-gray-300">
-                          Reclaim Protocol uses <span className="text-[#00fff5] font-bold">zero-knowledge proofs</span> to verify
-                          your Binance KYC without exposing your credentials.
-                        </p>
+                  {selectedCex && (
+                    <div className="rounded-lg glow-border p-4 bg-black/30">
+                      <div className="flex gap-3">
+                        <div className="flex-shrink-0">
+                          <svg
+                            className="h-5 w-5 text-[#00fff5]"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm text-gray-300">
+                            Reclaim Protocol uses <span className="text-[#00fff5] font-bold">zero-knowledge proofs</span> to verify
+                            your {selectedCex.charAt(0).toUpperCase() + selectedCex.slice(1)} KYC without exposing your credentials.
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
 
                   <button
                     type="submit"
-                    disabled={isLoading}
+                    disabled={isLoading || !selectedCex}
                     className="group relative flex w-full justify-center rounded-lg bg-transparent border-2 border-[#00fff5] px-4 py-3 text-sm font-bold text-[#00fff5] hover:shadow-[0_0_30px_rgba(0,255,245,0.5)] focus:outline-none focus:ring-2 focus:ring-[#00fff5] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 uppercase tracking-wider overflow-hidden transition-all duration-300"
                   >
                     <span className="relative z-10">{isLoading ? "Initializing..." : "Start Verification"}</span>
