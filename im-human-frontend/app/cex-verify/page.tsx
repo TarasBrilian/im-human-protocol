@@ -132,12 +132,12 @@ export default function CexVerifyPage() {
       {/* Success Modal Pop-up */}
       {showSuccessModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md">
-          <div className="holographic rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 animate-scale-in border-2 border-[#00fff5]/30">
+          <div className="holographic rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 animate-scale-in border-2 border-[#c41e3a]/40">
             <div className="text-center">
               {/* Success Icon with Animation */}
-              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border-2 border-[#00fff5] bg-black/50 mb-6 animate-pulse-glow">
+              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border-2 border-[#c41e3a] bg-black/50 mb-6 animate-pulse-glow">
                 <svg
-                  className="h-12 w-12 text-[#00fff5]"
+                  className="h-12 w-12 text-[#c41e3a]"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -165,14 +165,14 @@ export default function CexVerifyPage() {
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-400">Proof ID:</span>
-                      <span className="font-medium text-[#00fff5] text-xs truncate max-w-[200px] font-mono">
+                      <span className="font-medium text-[#c41e3a] text-xs truncate max-w-[200px] font-mono">
                         {proofs[0].identifier}
                       </span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-400">Status:</span>
-                      <span className="font-bold text-[#00fff5] flex items-center gap-1">
-                        <div className="w-2 h-2 bg-[#00fff5] rounded-full animate-pulse"></div>
+                      <span className="font-bold text-[#c41e3a] flex items-center gap-1">
+                        <div className="w-2 h-2 bg-[#c41e3a] rounded-full animate-pulse shadow-sm shadow-[#c41e3a]"></div>
                         Verified
                       </span>
                     </div>
@@ -184,10 +184,10 @@ export default function CexVerifyPage() {
               <div className="space-y-3">
                 <button
                   onClick={() => window.location.href = '/onchain-verify'}
-                  className="group relative w-full px-6 py-3 bg-transparent border-2 border-[#00fff5] text-[#00fff5] font-semibold rounded-lg transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,245,0.5)] uppercase tracking-wide overflow-hidden"
+                  className="group relative w-full px-6 py-3 bg-gradient-to-br from-[#1a1a1a] to-black border-2 border-[#c41e3a] text-[#c41e3a] font-semibold rounded-lg transition-all duration-300 hover:shadow-[0_0_30px_rgba(196,30,58,0.6)] hover:border-[#d4af37] hover:text-[#d4af37] uppercase tracking-wide overflow-hidden"
                 >
                   <span className="relative z-10">Bind Wallet Address</span>
-                  <div className="absolute inset-0 bg-[#00fff5] opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#c41e3a]/10 to-[#d4af37]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </button>
                 <button
                   onClick={() => setShowSuccessModal(false)}
@@ -202,13 +202,13 @@ export default function CexVerifyPage() {
         </div>
       )}
 
-      <div className="flex min-h-screen items-center justify-center bg-black px-4 pt-16 relative">
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-[#0a0a0f] via-[#1a1a1a] to-[#0a0a0f] px-4 pt-16 relative">
         <div className="w-full max-w-md space-y-8 relative z-10">
           <div className="text-center">
             <div className="flex justify-center mb-6">
               <div className="relative">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#00fff5] via-[#b600ff] to-[#ff00e5] opacity-20 blur-xl absolute top-0 left-0 animate-pulse"></div>
-                <svg className="w-16 h-16 relative z-10" fill="none" viewBox="0 0 24 24" stroke="#00fff5" strokeWidth="1.5">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#c41e3a] via-[#d4af37] to-[#8b0000] opacity-20 blur-xl absolute top-0 left-0 animate-pulse"></div>
+                <svg className="w-16 h-16 relative z-10" fill="none" viewBox="0 0 24 24" stroke="#c41e3a" strokeWidth="1.5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
                 </svg>
               </div>
@@ -217,7 +217,7 @@ export default function CexVerifyPage() {
               CEX KYC Verification
             </h1>
             <p className="mt-2 text-sm text-gray-400">
-              Verify your identity using <span className="text-[#00fff5]">Reclaim Protocol</span>
+              Verify your identity using <span className="text-[#c41e3a]">Reclaim Protocol</span>
             </p>
           </div>
 
@@ -227,7 +227,7 @@ export default function CexVerifyPage() {
               <>
                 <div className="mb-6">
                   <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                    <div className="w-2 h-2 bg-[#00fff5] rounded-full animate-pulse"></div>
+                    <div className="w-2 h-2 bg-[#c41e3a] rounded-full animate-pulse"></div>
                     Start Verification
                   </h2>
                   <p className="mt-1 text-sm text-gray-400">
@@ -238,9 +238,9 @@ export default function CexVerifyPage() {
                 <form onSubmit={handleStartVerification} className="space-y-6">
                   <div>
                     <label
-                      className="block text-sm font-semibold text-[#00fff5] mb-4 uppercase tracking-wide"
+                      className="block text-sm font-semibold text-[#c41e3a] mb-4 uppercase tracking-wide"
                     >
-                      Choose Exchange <span className="text-[#ff00e5]">*</span>
+                      Choose Exchange <span className="text-[#8b0000]">*</span>
                     </label>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                       {cexOptions.map((cex) => (
@@ -251,9 +251,9 @@ export default function CexVerifyPage() {
                           onClick={() => handleCexSelection(cex.id)}
                           className={`relative group px-4 py-6 rounded-lg border-2 transition-all duration-300 ${
                             selectedCex === cex.id
-                              ? "border-[#00fff5] bg-[#00fff5]/10 shadow-[0_0_20px_rgba(0,255,245,0.3)]"
+                              ? "border-[#c41e3a] bg-[#c41e3a]/10 shadow-[0_0_20px_rgba(196,30,58,0.4)]"
                               : cex.enabled
-                              ? "border-[#00fff5]/30 bg-black/50 hover:border-[#00fff5] hover:bg-[#00fff5]/5"
+                              ? "border-[#c41e3a]/30 bg-black/50 hover:border-[#c41e3a] hover:bg-[#c41e3a]/5"
                               : "border-gray-600/30 bg-gray-900/30 cursor-not-allowed opacity-50"
                           }`}
                           title={!cex.enabled ? "Coming Soon" : ""}
@@ -265,13 +265,13 @@ export default function CexVerifyPage() {
                               className="w-12 h-12 object-contain"
                             />
                             <span className={`font-bold text-sm uppercase tracking-wide ${
-                              selectedCex === cex.id ? "text-[#00fff5]" : cex.enabled ? "text-white" : "text-gray-500"
+                              selectedCex === cex.id ? "text-[#c41e3a]" : cex.enabled ? "text-white" : "text-gray-500"
                             }`}>
                               {cex.name}
                             </span>
                             {!cex.enabled && (
                               <span className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                <span className="bg-black/90 text-[#ff00e5] text-xs font-bold px-3 py-1 rounded-full border border-[#ff00e5]/50">
+                                <span className="bg-black/90 text-[#8b0000] text-xs font-bold px-3 py-1 rounded-full border border-[#8b0000]/50">
                                   COMING SOON
                                 </span>
                               </span>
@@ -286,12 +286,12 @@ export default function CexVerifyPage() {
                     <div>
                       <label
                         htmlFor="wallet"
-                        className="block text-sm font-semibold text-[#b600ff] mb-2 uppercase tracking-wide"
+                        className="block text-sm font-semibold text-[#d4af37] mb-2 uppercase tracking-wide"
                       >
                         Connected Wallet Address
                       </label>
-                      <div className="block w-full rounded-lg border border-[#b600ff]/30 bg-black/50 px-4 py-3 text-[#b600ff] font-mono text-sm flex items-center gap-2">
-                        <div className="w-2 h-2 bg-[#b600ff] rounded-full animate-pulse"></div>
+                      <div className="block w-full rounded-lg border border-[#d4af37]/30 bg-black/50 px-4 py-3 text-[#d4af37] font-mono text-sm flex items-center gap-2">
+                        <div className="w-2 h-2 bg-[#d4af37] rounded-full animate-pulse"></div>
                         <span className="truncate">{currentAccount.address}</span>
                       </div>
                       <p className="mt-1 text-xs text-gray-400">
@@ -305,7 +305,7 @@ export default function CexVerifyPage() {
                       <div className="flex gap-3">
                         <div className="flex-shrink-0">
                           <svg
-                            className="h-5 w-5 text-[#00fff5]"
+                            className="h-5 w-5 text-[#c41e3a]"
                             viewBox="0 0 20 20"
                             fill="currentColor"
                           >
@@ -318,7 +318,7 @@ export default function CexVerifyPage() {
                         </div>
                         <div className="flex-1">
                           <p className="text-sm text-gray-300">
-                            Reclaim Protocol uses <span className="text-[#00fff5] font-bold">zero-knowledge proofs</span> to verify
+                            Reclaim Protocol uses <span className="text-[#c41e3a] font-bold">zero-knowledge proofs</span> to verify
                             your {selectedCex.charAt(0).toUpperCase() + selectedCex.slice(1)} KYC without exposing your credentials.
                           </p>
                         </div>
@@ -329,10 +329,10 @@ export default function CexVerifyPage() {
                   <button
                     type="submit"
                     disabled={isLoading || !selectedCex}
-                    className="group relative flex w-full justify-center rounded-lg bg-transparent border-2 border-[#00fff5] px-4 py-3 text-sm font-bold text-[#00fff5] hover:shadow-[0_0_30px_rgba(0,255,245,0.5)] focus:outline-none focus:ring-2 focus:ring-[#00fff5] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 uppercase tracking-wider overflow-hidden transition-all duration-300"
+                    className="group relative flex w-full justify-center rounded-lg bg-transparent border-2 border-[#c41e3a] px-4 py-3 text-sm font-bold text-[#c41e3a] hover:shadow-[0_0_30px_rgba(196,30,58,0.6)] focus:outline-none focus:ring-2 focus:ring-[#c41e3a] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 uppercase tracking-wider overflow-hidden transition-all duration-300"
                   >
                     <span className="relative z-10">{isLoading ? "Initializing..." : "Start Verification"}</span>
-                    <div className="absolute inset-0 bg-[#00fff5] opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-[#c41e3a] opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
                   </button>
                 </form>
               </>
@@ -343,7 +343,7 @@ export default function CexVerifyPage() {
               <>
                 <div className="mb-6 text-center">
                   <h2 className="text-xl font-bold text-white flex items-center justify-center gap-2">
-                    <div className="w-2 h-2 bg-[#b600ff] rounded-full animate-pulse"></div>
+                    <div className="w-2 h-2 bg-[#d4af37] rounded-full animate-pulse"></div>
                     Scan QR Code
                   </h2>
                   <p className="mt-1 text-sm text-gray-400">
@@ -360,10 +360,10 @@ export default function CexVerifyPage() {
                 <div className="space-y-3">
                   <button
                     onClick={openVerificationUrl}
-                    className="group relative flex w-full justify-center rounded-lg bg-transparent border-2 border-[#00fff5] px-4 py-3 text-sm font-bold text-[#00fff5] hover:shadow-[0_0_30px_rgba(0,255,245,0.5)] focus:outline-none uppercase tracking-wider overflow-hidden transition-all duration-300"
+                    className="group relative flex w-full justify-center rounded-lg bg-transparent border-2 border-[#c41e3a] px-4 py-3 text-sm font-bold text-[#c41e3a] hover:shadow-[0_0_30px_rgba(196,30,58,0.6)] focus:outline-none uppercase tracking-wider overflow-hidden transition-all duration-300"
                   >
                     <span className="relative z-10">Open Verification Page</span>
-                    <div className="absolute inset-0 bg-[#00fff5] opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-[#c41e3a] opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
                   </button>
 
                   <button
@@ -375,9 +375,9 @@ export default function CexVerifyPage() {
                   </button>
                 </div>
 
-                <div className="mt-6 rounded-lg border border-[#ff00e5]/30 bg-black/30 p-4">
+                <div className="mt-6 rounded-lg border border-[#8b0000]/30 bg-black/30 p-4">
                   <div className="flex gap-3">
-                    <div className="w-2 h-2 bg-[#ff00e5] rounded-full animate-pulse mt-1"></div>
+                    <div className="w-2 h-2 bg-[#8b0000] rounded-full animate-pulse mt-1"></div>
                     <p className="text-sm text-gray-300">
                       Waiting for verification... This page will update
                       automatically once completed.
@@ -391,9 +391,9 @@ export default function CexVerifyPage() {
             {step === "success" && proofs && (
               <>
                 <div className="text-center">
-                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-2 border-[#00fff5] bg-black/50 animate-pulse-glow">
+                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-2 border-[#c41e3a] bg-black/50 animate-pulse-glow">
                     <svg
-                      className="h-8 w-8 text-[#00fff5]"
+                      className="h-8 w-8 text-[#c41e3a]"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -419,7 +419,7 @@ export default function CexVerifyPage() {
                     <span className="text-gray-400">
                       Proof ID:
                     </span>
-                    <span className="font-medium text-[#00fff5] text-xs truncate font-mono">
+                    <span className="font-medium text-[#c41e3a] text-xs truncate font-mono">
                       {proofs[0]?.identifier?.substring(0, 20)}...
                     </span>
                   </div>
@@ -435,8 +435,8 @@ export default function CexVerifyPage() {
                     <span className="text-gray-400">
                       Status:
                     </span>
-                    <span className="font-bold text-[#00fff5] flex items-center gap-1">
-                      <div className="w-2 h-2 bg-[#00fff5] rounded-full animate-pulse"></div>
+                    <span className="font-bold text-[#c41e3a] flex items-center gap-1">
+                      <div className="w-2 h-2 bg-[#c41e3a] rounded-full animate-pulse"></div>
                       Verified
                     </span>
                   </div>
@@ -444,10 +444,10 @@ export default function CexVerifyPage() {
 
                 <button
                   onClick={handleReset}
-                  className="group relative mt-6 flex w-full justify-center rounded-lg bg-transparent border-2 border-[#00fff5] px-4 py-3 text-sm font-bold text-[#00fff5] hover:shadow-[0_0_30px_rgba(0,255,245,0.5)] uppercase tracking-wider overflow-hidden transition-all duration-300"
+                  className="group relative mt-6 flex w-full justify-center rounded-lg bg-transparent border-2 border-[#c41e3a] px-4 py-3 text-sm font-bold text-[#c41e3a] hover:shadow-[0_0_30px_rgba(196,30,58,0.6)] uppercase tracking-wider overflow-hidden transition-all duration-300"
                 >
                   <span className="relative z-10">Verify Another Account</span>
-                  <div className="absolute inset-0 bg-[#00fff5] opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 bg-[#c41e3a] opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
                 </button>
               </>
             )}
@@ -456,9 +456,9 @@ export default function CexVerifyPage() {
             {step === "error" && (
               <>
                 <div className="text-center">
-                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-2 border-[#ff00e5] bg-black/50">
+                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-2 border-[#8b0000] bg-black/50">
                     <svg
-                      className="h-8 w-8 text-[#ff00e5]"
+                      className="h-8 w-8 text-[#8b0000]"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -474,17 +474,17 @@ export default function CexVerifyPage() {
                   <h2 className="mt-4 text-xl font-bold text-white">
                     Verification Failed
                   </h2>
-                  <p className="mt-2 text-sm text-[#ff00e5] border border-[#ff00e5]/30 rounded-lg p-3 bg-black/30">
+                  <p className="mt-2 text-sm text-[#8b0000] border border-[#8b0000]/30 rounded-lg p-3 bg-black/30">
                     {error || "An error occurred during verification"}
                   </p>
                 </div>
 
                 <button
                   onClick={handleReset}
-                  className="group relative mt-6 flex w-full justify-center rounded-lg bg-transparent border-2 border-[#ff00e5] px-4 py-3 text-sm font-bold text-[#ff00e5] hover:shadow-[0_0_30px_rgba(255,0,229,0.5)] uppercase tracking-wider overflow-hidden transition-all duration-300"
+                  className="group relative mt-6 flex w-full justify-center rounded-lg bg-transparent border-2 border-[#8b0000] px-4 py-3 text-sm font-bold text-[#8b0000] hover:shadow-[0_0_30px_rgba(139,0,0,0.6)] uppercase tracking-wider overflow-hidden transition-all duration-300"
                 >
                   <span className="relative z-10">Try Again</span>
-                  <div className="absolute inset-0 bg-[#ff00e5] opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 bg-[#8b0000] opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
                 </button>
               </>
             )}
@@ -492,11 +492,11 @@ export default function CexVerifyPage() {
             <div className="mt-6">
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full h-px bg-gradient-to-r from-transparent via-[#00fff5]/30 to-transparent" />
+                  <div className="w-full h-px bg-gradient-to-r from-transparent via-[#c41e3a]/30 to-transparent" />
                 </div>
                 <div className="relative flex justify-center text-sm">
                   <span className="bg-black px-3 text-gray-400 font-mono text-xs">
-                    Powered by <span className="text-[#00fff5]">Reclaim Protocol</span>
+                    Powered by <span className="text-[#c41e3a]">Reclaim Protocol</span>
                   </span>
                 </div>
               </div>
@@ -504,7 +504,7 @@ export default function CexVerifyPage() {
               <div className="mt-6 text-center">
                 <a
                   href="/"
-                  className="text-sm font-semibold text-[#00fff5] hover:text-[#b600ff] transition-colors uppercase tracking-wide"
+                  className="text-sm font-semibold text-[#c41e3a] hover:text-[#d4af37] transition-colors uppercase tracking-wide"
                 >
                   ← Back to Home
                 </a>

@@ -1,12 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  --background: #000000;
-  --foreground: #ffffff;
-  --neon-cyan: #00fff5;
-  --neon-purple: #b600ff;
-  --neon-pink: #ff00e5;
-  --neon-blue: #0066ff;
+  --background: #0a0a0f;
+  --foreground: #f5f5f0;
+  --ninja-red: #c41e3a;
+  --ninja-crimson: #8b0000;
+  --ninja-black: #1a1a1a;
+  --ninja-gold: #d4af37;
+  --ninja-silver: #c0c0c0;
+  --ninja-smoke: #36454f;
+  --ink-black: #000000;
+  --paper-white: #faf9f6;
 }
 
 @theme inline {
@@ -17,18 +21,24 @@
 }
 
 body {
-  background: #000000;
+  background: linear-gradient(180deg, #0a0a0f 0%, #1a1a1a 100%);
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
   overflow-x: hidden;
 }
 
-/* Glowing grid background */
+/* Japanese paper texture background with subtle wave pattern */
 .grid-background {
   background-image:
-    linear-gradient(rgba(0, 255, 245, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 255, 245, 0.05) 1px, transparent 1px);
-  background-size: 50px 50px;
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 35px,
+      rgba(196, 30, 58, 0.03) 35px,
+      rgba(196, 30, 58, 0.03) 70px
+    ),
+    radial-gradient(circle at 20% 80%, rgba(212, 175, 55, 0.05), transparent 50%);
+  background-size: 100% 100%, 800px 800px;
   position: relative;
 }
 
@@ -39,11 +49,15 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(0, 255, 245, 0.03), transparent 50%);
+  background:
+    url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 50 Q 25 45, 50 50 T 100 50' stroke='rgba(196, 30, 58, 0.04)' fill='none' stroke-width='1'/%3E%3C/svg%3E"),
+    radial-gradient(circle at 50% 50%, rgba(139, 0, 0, 0.03), transparent 70%);
+  background-size: 100px 100px, 100% 100%;
   pointer-events: none;
+  animation: wave-drift 20s ease-in-out infinite;
 }
 
-/* Animated gradient text */
+/* Animated gradient text - Ninja theme */
 @keyframes gradient-shift {
   0%, 100% {
     background-position: 0% 50%;
@@ -53,66 +67,78 @@ body {
   }
 }
 
+@keyframes wave-drift {
+  0%, 100% {
+    background-position: 0 0, 0 0;
+  }
+  50% {
+    background-position: 50px 25px, 0 0;
+  }
+}
+
 .gradient-text {
-  background: linear-gradient(90deg, #00fff5, #b600ff, #ff00e5, #00fff5);
-  background-size: 200% auto;
+  background: linear-gradient(135deg, #c41e3a, #d4af37, #c41e3a, #8b0000, #c41e3a);
+  background-size: 300% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: gradient-shift 3s ease infinite;
+  animation: gradient-shift 4s ease infinite;
 }
 
-/* Glowing borders */
+/* Glowing borders - Ninja theme */
 .glow-border {
   position: relative;
-  border: 1px solid rgba(0, 255, 245, 0.3);
+  border: 1px solid rgba(196, 30, 58, 0.4);
   box-shadow:
-    0 0 10px rgba(0, 255, 245, 0.2),
-    inset 0 0 10px rgba(0, 255, 245, 0.05);
+    0 0 15px rgba(196, 30, 58, 0.3),
+    inset 0 0 15px rgba(139, 0, 0, 0.1);
 }
 
 .glow-border-purple {
   position: relative;
-  border: 1px solid rgba(182, 0, 255, 0.3);
+  border: 1px solid rgba(212, 175, 55, 0.4);
   box-shadow:
-    0 0 10px rgba(182, 0, 255, 0.2),
-    inset 0 0 10px rgba(182, 0, 255, 0.05);
+    0 0 15px rgba(212, 175, 55, 0.3),
+    inset 0 0 15px rgba(212, 175, 55, 0.1);
 }
 
 .glow-border-pink {
   position: relative;
-  border: 1px solid rgba(255, 0, 229, 0.3);
+  border: 1px solid rgba(139, 0, 0, 0.4);
   box-shadow:
-    0 0 10px rgba(255, 0, 229, 0.2),
-    inset 0 0 10px rgba(255, 0, 229, 0.05);
+    0 0 15px rgba(139, 0, 0, 0.3),
+    inset 0 0 15px rgba(139, 0, 0, 0.1);
 }
 
-/* Floating animation */
+/* Floating animation - Ninja stealth movement */
 @keyframes float {
   0%, 100% {
-    transform: translateY(0px);
+    transform: translateY(0px) translateX(0px);
   }
-  50% {
-    transform: translateY(-20px);
+  33% {
+    transform: translateY(-15px) translateX(5px);
+  }
+  66% {
+    transform: translateY(-8px) translateX(-5px);
   }
 }
 
 .animate-float {
-  animation: float 6s ease-in-out infinite;
+  animation: float 8s ease-in-out infinite;
 }
 
-/* Pulse glow animation */
+/* Pulse glow animation - Ninja theme */
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(0, 255, 245, 0.4);
+    box-shadow: 0 0 20px rgba(196, 30, 58, 0.5);
   }
   50% {
-    box-shadow: 0 0 40px rgba(0, 255, 245, 0.8);
+    box-shadow: 0 0 35px rgba(196, 30, 58, 0.8), 0 0 50px rgba(139, 0, 0, 0.4);
   }
 }
 
 .animate-pulse-glow {
-  animation: pulse-glow 2s ease-in-out infinite;
+  animation: pulse-glow 2.5s ease-in-out infinite;
 }
 
 /* Slide in from bottom */
@@ -177,7 +203,7 @@ body {
   animation: slide-in 0.3s ease-out;
 }
 
-/* Rotating border animation */
+/* Rotating border animation - Ninja theme */
 @keyframes rotate-border {
   0% {
     transform: rotate(0deg);
@@ -195,21 +221,29 @@ body {
   content: '';
   position: absolute;
   inset: -2px;
-  background: linear-gradient(45deg, #00fff5, #b600ff, #ff00e5, #00fff5);
+  background: linear-gradient(45deg, #c41e3a, #d4af37, #8b0000, #c41e3a);
   border-radius: inherit;
-  animation: rotate-border 4s linear infinite;
-  opacity: 0.5;
+  animation: rotate-border 6s linear infinite;
+  opacity: 0.6;
   z-index: -1;
   background-size: 400% 400%;
 }
 
-/* Scanline effect */
+/* Scanline effect - Ninja blade slash */
 @keyframes scanline {
   0% {
-    transform: translateY(-100%);
+    transform: translateY(-100%) rotate(-0.5deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
   }
   100% {
-    transform: translateY(100vh);
+    transform: translateY(100vh) rotate(0.5deg);
+    opacity: 0;
   }
 }
 
@@ -218,37 +252,38 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  height: 2px;
-  background: linear-gradient(transparent, rgba(0, 255, 245, 0.3), transparent);
+  height: 3px;
+  background: linear-gradient(90deg, transparent, rgba(196, 30, 58, 0.4) 20%, rgba(212, 175, 55, 0.3) 50%, rgba(196, 30, 58, 0.4) 80%, transparent);
   pointer-events: none;
-  animation: scanline 8s linear infinite;
+  animation: scanline 12s ease-in-out infinite;
   z-index: 1000;
+  box-shadow: 0 0 10px rgba(196, 30, 58, 0.5);
 }
 
-/* Glitch effect for hover states */
+/* Ink brush effect for hover states - Ninja theme */
 @keyframes glitch {
   0% {
-    text-shadow: 2px 2px #00fff5, -2px -2px #ff00e5;
+    text-shadow: 2px 2px rgba(196, 30, 58, 0.8), -2px -2px rgba(212, 175, 55, 0.6);
   }
   25% {
-    text-shadow: -2px -2px #00fff5, 2px 2px #ff00e5;
+    text-shadow: -2px -2px rgba(196, 30, 58, 0.8), 2px 2px rgba(212, 175, 55, 0.6);
   }
   50% {
-    text-shadow: 2px -2px #00fff5, -2px 2px #ff00e5;
+    text-shadow: 2px -2px rgba(196, 30, 58, 0.8), -2px 2px rgba(212, 175, 55, 0.6);
   }
   75% {
-    text-shadow: -2px 2px #00fff5, 2px -2px #ff00e5;
+    text-shadow: -2px 2px rgba(196, 30, 58, 0.8), 2px -2px rgba(212, 175, 55, 0.6);
   }
   100% {
-    text-shadow: 2px 2px #00fff5, -2px -2px #ff00e5;
+    text-shadow: 2px 2px rgba(196, 30, 58, 0.8), -2px -2px rgba(212, 175, 55, 0.6);
   }
 }
 
 .glitch:hover {
-  animation: glitch 0.3s ease-in-out infinite;
+  animation: glitch 0.4s ease-in-out infinite;
 }
 
-/* Matrix rain effect background element */
+/* Falling cherry blossoms effect - Ninja theme */
 .matrix-rain {
   position: fixed;
   top: 0;
@@ -257,39 +292,37 @@ body {
   height: 100%;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.03;
+  opacity: 0.04;
   background-image:
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0, 255, 245, 0.1) 2px,
-      rgba(0, 255, 245, 0.1) 4px
-    );
-  animation: matrix-scroll 20s linear infinite;
+    radial-gradient(circle at 20% 30%, rgba(196, 30, 58, 0.08) 1px, transparent 1px),
+    radial-gradient(circle at 80% 60%, rgba(212, 175, 55, 0.06) 1px, transparent 1px),
+    radial-gradient(circle at 40% 80%, rgba(196, 30, 58, 0.07) 1px, transparent 1px);
+  background-size: 150px 150px, 200px 200px, 180px 180px;
+  background-position: 0 0, 50px 50px, 100px 25px;
+  animation: cherry-blossom-fall 40s linear infinite;
 }
 
-@keyframes matrix-scroll {
+@keyframes cherry-blossom-fall {
   0% {
-    background-position: 0 0;
+    background-position: 0 0, 50px 50px, 100px 25px;
   }
   100% {
-    background-position: 0 100vh;
+    background-position: 0 150vh, 50px calc(150vh + 50px), 100px calc(150vh + 25px);
   }
 }
 
-/* Neon button styles */
+/* Ninja button styles - Traditional Japanese aesthetic */
 .neon-button {
   position: relative;
   padding: 1rem 2rem;
-  background: transparent;
-  border: 2px solid #00fff5;
-  color: #00fff5;
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.8), rgba(10, 10, 15, 0.9));
+  border: 2px solid #c41e3a;
+  color: #c41e3a;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 2px;
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: all 0.4s ease;
 }
 
 .neon-button::before {
@@ -299,19 +332,22 @@ body {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: rgba(0, 255, 245, 0.1);
-  transition: left 0.3s ease;
+  background: linear-gradient(90deg, transparent, rgba(196, 30, 58, 0.2), rgba(212, 175, 55, 0.1));
+  transition: left 0.4s ease;
 }
 
 .neon-button:hover::before {
-  left: 0;
+  left: 100%;
 }
 
 .neon-button:hover {
+  border-color: #d4af37;
+  color: #d4af37;
   box-shadow:
-    0 0 20px rgba(0, 255, 245, 0.5),
-    inset 0 0 20px rgba(0, 255, 245, 0.2);
-  text-shadow: 0 0 10px rgba(0, 255, 245, 0.8);
+    0 0 25px rgba(196, 30, 58, 0.6),
+    inset 0 0 20px rgba(139, 0, 0, 0.2);
+  text-shadow: 0 0 10px rgba(212, 175, 55, 0.8);
+  transform: translateY(-2px);
 }
 
 /* Stagger animation delays */
@@ -322,22 +358,35 @@ body {
 .stagger-5 { animation-delay: 0.5s; }
 .stagger-6 { animation-delay: 0.6s; }
 
-/* Holographic card effect */
+/* Paper card effect - Ninja theme */
 .holographic {
   background: linear-gradient(
     135deg,
-    rgba(0, 255, 245, 0.05) 0%,
-    rgba(182, 0, 255, 0.05) 50%,
-    rgba(255, 0, 229, 0.05) 100%
+    rgba(26, 26, 26, 0.7) 0%,
+    rgba(196, 30, 58, 0.05) 30%,
+    rgba(139, 0, 0, 0.08) 70%,
+    rgba(26, 26, 26, 0.7) 100%
   );
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(0, 255, 245, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(196, 30, 58, 0.3);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  position: relative;
+}
+
+.holographic::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23noise)' opacity='0.015' /%3E%3C/svg%3E");
+  border-radius: inherit;
+  pointer-events: none;
 }
 
 .holographic:hover {
   transform: translateY(-5px);
   box-shadow:
-    0 10px 30px rgba(0, 255, 245, 0.2),
-    0 5px 15px rgba(182, 0, 255, 0.2);
+    0 10px 40px rgba(196, 30, 58, 0.3),
+    0 5px 20px rgba(139, 0, 0, 0.2),
+    inset 0 1px 0 rgba(212, 175, 55, 0.1);
+  border-color: rgba(212, 175, 55, 0.4);
 }

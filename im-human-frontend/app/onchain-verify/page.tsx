@@ -86,7 +86,10 @@ export default function OnchainVerifyPage() {
   };
 
   // Computed values
-  const displayAddress = currentAccount?.address || "Not connected";
+  const displayAddress = currentAccount?.address
+    ? `${currentAccount.address.slice(0, 8)}...${currentAccount.address.slice(-8)}`
+    : "Not connected";
+  const fullAddress = currentAccount?.address || "";
   const hasVerification = verificationData !== null;
   const canBind = currentAccount && hasVerification && !isBound;
   const canAnalyze = currentAccount && isBound;
@@ -97,14 +100,14 @@ export default function OnchainVerifyPage() {
       <div className="scanline" />
       <div className="matrix-rain" />
 
-      <div className="flex min-h-screen items-center justify-center bg-black px-4 pt-16 relative">
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-[#0a0a0f] via-[#1a1a1a] to-[#0a0a0f] px-4 pt-16 relative">
         <div className="w-full max-w-2xl space-y-8 relative z-10">
           {/* Header */}
           <div className="text-center">
             <div className="flex justify-center mb-6">
               <div className="relative">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#b600ff] via-[#00fff5] to-[#ff00e5] opacity-20 blur-xl absolute top-0 left-0 animate-pulse"></div>
-                <svg className="w-16 h-16 relative z-10" fill="none" viewBox="0 0 24 24" stroke="#b600ff" strokeWidth="1.5">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#d4af37] via-[#c41e3a] to-[#8b0000] opacity-20 blur-xl absolute top-0 left-0 animate-pulse"></div>
+                <svg className="w-16 h-16 relative z-10" fill="none" viewBox="0 0 24 24" stroke="#d4af37" strokeWidth="1.5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
@@ -113,7 +116,7 @@ export default function OnchainVerifyPage() {
               Onchain Verification
             </h1>
             <p className="mt-2 text-sm text-gray-400">
-              Analyze your wallet activity to verify <span className="text-[#b600ff]">human behavior</span>
+              Analyze your wallet activity to verify <span className="text-[#d4af37]">human behavior</span>
             </p>
           </div>
 
@@ -121,16 +124,16 @@ export default function OnchainVerifyPage() {
             <div className="space-y-6">
               {/* Connected Address */}
               <div>
-                <label className="block text-sm font-semibold text-[#00fff5] mb-2 uppercase tracking-wide">
+                <label className="block text-sm font-semibold text-[#c41e3a] mb-2 uppercase tracking-wide">
                   Connected Address
                 </label>
-                <div className="mt-2 flex items-center justify-between rounded-lg border border-[#00fff5]/30 bg-black/50 px-4 py-3">
-                  <code className="text-sm font-mono text-white">{displayAddress}</code>
+                <div className="mt-2 flex items-center justify-between rounded-lg border border-[#c41e3a]/30 bg-black/50 px-4 py-3">
+                  <code className="text-sm font-mono text-white truncate">{displayAddress}</code>
                   {currentAccount && (
                     <button
-                      onClick={() => navigator.clipboard.writeText(displayAddress)}
-                      className="ml-2 rounded-md p-1 text-[#00fff5] hover:bg-[#00fff5]/10 transition-colors"
-                      title="Copy address"
+                      onClick={() => navigator.clipboard.writeText(fullAddress)}
+                      className="ml-2 flex-shrink-0 rounded-md p-1 text-[#c41e3a] hover:bg-[#c41e3a]/10 transition-colors"
+                      title="Copy full address"
                     >
                       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -142,17 +145,17 @@ export default function OnchainVerifyPage() {
 
               {/* CEX Verification Status */}
               <div>
-                <label className="block text-sm font-semibold text-[#b600ff] mb-2 uppercase tracking-wide">
+                <label className="block text-sm font-semibold text-[#d4af37] mb-2 uppercase tracking-wide">
                   CEX Verification Status
                 </label>
                 <div className={`mt-2 rounded-lg border px-4 py-3 ${
-                  hasVerification ? "border-[#00fff5]/50 bg-black/50 glow-border" : "border-gray-600/30 bg-black/30"
+                  hasVerification ? "border-[#c41e3a]/50 bg-black/50 glow-border" : "border-gray-600/30 bg-black/30"
                 }`}>
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">
                       {hasVerification ? (
-                        <span className="text-[#00fff5] flex items-center gap-2">
-                          <div className="w-2 h-2 bg-[#00fff5] rounded-full animate-pulse"></div>
+                        <span className="text-[#c41e3a] flex items-center gap-2">
+                          <div className="w-2 h-2 bg-[#c41e3a] rounded-full animate-pulse"></div>
                           Verified
                         </span>
                       ) : (
@@ -162,7 +165,7 @@ export default function OnchainVerifyPage() {
                     {!hasVerification && (
                       <button
                         onClick={() => router.push('/cex-verify')}
-                        className="text-sm text-[#00fff5] hover:text-[#b600ff] transition-colors font-semibold"
+                        className="text-sm text-[#c41e3a] hover:text-[#d4af37] transition-colors font-semibold"
                       >
                         Verify Now →
                       </button>
@@ -178,16 +181,16 @@ export default function OnchainVerifyPage() {
 
               {/* Address Binding Status */}
               <div>
-                <label className="block text-sm font-semibold text-[#ff00e5] mb-2 uppercase tracking-wide">
+                <label className="block text-sm font-semibold text-[#8b0000] mb-2 uppercase tracking-wide">
                   Address Binding Status
                 </label>
                 <div className={`mt-2 rounded-lg border px-4 py-3 ${
-                  isBound ? "border-[#00fff5]/50 bg-black/50 glow-border" : "border-gray-600/30 bg-black/30"
+                  isBound ? "border-[#c41e3a]/50 bg-black/50 glow-border" : "border-gray-600/30 bg-black/30"
                 }`}>
                   <span className="text-sm font-medium">
                     {isBound ? (
-                      <span className="text-[#00fff5] flex items-center gap-2">
-                        <div className="w-2 h-2 bg-[#00fff5] rounded-full animate-pulse"></div>
+                      <span className="text-[#c41e3a] flex items-center gap-2">
+                        <div className="w-2 h-2 bg-[#c41e3a] rounded-full animate-pulse"></div>
                         Address Bound
                       </span>
                     ) : (
@@ -203,7 +206,7 @@ export default function OnchainVerifyPage() {
                   <button
                     onClick={handleBindAddress}
                     disabled={isBinding}
-                    className="group relative flex w-full justify-center rounded-lg bg-transparent border-2 border-[#00fff5] px-4 py-3 text-sm font-bold text-[#00fff5] hover:shadow-[0_0_30px_rgba(0,255,245,0.5)] focus:outline-none uppercase tracking-wider overflow-hidden transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="group relative flex w-full justify-center rounded-lg bg-transparent border-2 border-[#c41e3a] px-4 py-3 text-sm font-bold text-[#c41e3a] hover:shadow-[0_0_30px_rgba(0,255,245,0.5)] focus:outline-none uppercase tracking-wider overflow-hidden transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     <span className="relative z-10 flex items-center justify-center">
                       {isBinding && (
@@ -214,21 +217,21 @@ export default function OnchainVerifyPage() {
                       )}
                       {isBinding ? "Sign & Bind Address..." : "Sign & Bind Address"}
                     </span>
-                    <div className="absolute inset-0 bg-[#00fff5] opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-[#c41e3a] opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
                   </button>
 
                   {bindError && (
-                    <div className="rounded-lg border border-[#ff00e5]/30 bg-black/30 p-4">
+                    <div className="rounded-lg border border-[#8b0000]/30 bg-black/30 p-4">
                       <div className="flex gap-3">
-                        <div className="w-2 h-2 bg-[#ff00e5] rounded-full animate-pulse mt-1"></div>
-                        <p className="text-sm text-[#ff00e5]">{bindError}</p>
+                        <div className="w-2 h-2 bg-[#8b0000] rounded-full animate-pulse mt-1"></div>
+                        <p className="text-sm text-[#8b0000]">{bindError}</p>
                       </div>
                     </div>
                   )}
 
                   <div className="rounded-lg glow-border p-4 bg-black/30">
                     <div className="flex gap-3">
-                      <svg className="h-5 w-5 text-[#00fff5] flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                      <svg className="h-5 w-5 text-[#c41e3a] flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                       </svg>
                       <p className="text-sm text-gray-300">
@@ -242,12 +245,12 @@ export default function OnchainVerifyPage() {
               {/* Analysis Results */}
               {analysisResult ? (
                 <div>
-                  <label className="block text-sm font-semibold text-[#b600ff] mb-2 uppercase tracking-wide">
+                  <label className="block text-sm font-semibold text-[#d4af37] mb-2 uppercase tracking-wide">
                     Analysis Results
                   </label>
 
                   {/* Human Score Display */}
-                  <div className="mt-2 rounded-lg border border-[#00fff5]/50 bg-black/50 glow-border p-6">
+                  <div className="mt-2 rounded-lg border border-[#c41e3a]/50 bg-black/50 glow-border p-6">
                     <div className="text-center mb-4">
                       <div className="text-6xl font-bold gradient-text mb-2">
                         {analysisResult.humanScore}
@@ -262,11 +265,11 @@ export default function OnchainVerifyPage() {
                         <div className="text-xs text-gray-400 uppercase tracking-wide">Total</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-[#00fff5]">{analysisResult.successfulTransactions}</div>
+                        <div className="text-2xl font-bold text-[#c41e3a]">{analysisResult.successfulTransactions}</div>
                         <div className="text-xs text-gray-400 uppercase tracking-wide">Success</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-[#ff00e5]">{analysisResult.failedTransactions}</div>
+                        <div className="text-2xl font-bold text-[#8b0000]">{analysisResult.failedTransactions}</div>
                         <div className="text-xs text-gray-400 uppercase tracking-wide">Failed</div>
                       </div>
                     </div>
@@ -279,19 +282,19 @@ export default function OnchainVerifyPage() {
                       </div>
                       <div className="w-full bg-gray-800 rounded-full h-2">
                         <div
-                          className="h-2 rounded-full bg-gradient-to-r from-[#b600ff] to-[#00fff5]"
+                          className="h-2 rounded-full bg-gradient-to-r from-[#d4af37] to-[#c41e3a]"
                           style={{ width: `${analysisResult.successRate}%` }}
                         ></div>
                       </div>
                     </div>
 
                     {/* AI Analysis */}
-                    <div className="rounded-lg bg-black/50 border border-[#b600ff]/30 p-4">
+                    <div className="rounded-lg bg-black/50 border border-[#d4af37]/30 p-4">
                       <div className="flex gap-2 mb-2">
-                        <svg className="w-5 h-5 text-[#b600ff] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                        <svg className="w-5 h-5 text-[#d4af37] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                         </svg>
-                        <div className="text-xs font-bold text-[#b600ff] uppercase tracking-wide">AI Analysis</div>
+                        <div className="text-xs font-bold text-[#d4af37] uppercase tracking-wide">AI Analysis</div>
                       </div>
                       <p className="text-sm text-gray-300 leading-relaxed">{analysisResult.aiAnalysis}</p>
                     </div>
@@ -299,7 +302,7 @@ export default function OnchainVerifyPage() {
                 </div>
               ) : (
                 <div>
-                  <label className="block text-sm font-semibold text-[#b600ff] mb-2 uppercase tracking-wide">
+                  <label className="block text-sm font-semibold text-[#d4af37] mb-2 uppercase tracking-wide">
                     Activity Status
                   </label>
                   <div className="mt-2 rounded-lg border border-gray-600/30 bg-black/30 px-4 py-6 text-center">
@@ -316,10 +319,10 @@ export default function OnchainVerifyPage() {
 
               {/* Analysis Error */}
               {analysisError && (
-                <div className="rounded-lg border border-[#ff00e5]/30 bg-black/30 p-4">
+                <div className="rounded-lg border border-[#8b0000]/30 bg-black/30 p-4">
                   <div className="flex gap-3">
-                    <div className="w-2 h-2 bg-[#ff00e5] rounded-full animate-pulse mt-1"></div>
-                    <p className="text-sm text-[#ff00e5]">{analysisError}</p>
+                    <div className="w-2 h-2 bg-[#8b0000] rounded-full animate-pulse mt-1"></div>
+                    <p className="text-sm text-[#8b0000]">{analysisError}</p>
                   </div>
                 </div>
               )}
@@ -328,7 +331,7 @@ export default function OnchainVerifyPage() {
               <button
                 onClick={handleAnalyze}
                 disabled={isAnalyzing || !canAnalyze}
-                className="group relative flex w-full justify-center rounded-lg bg-transparent border-2 border-[#b600ff] px-4 py-3 text-sm font-bold text-[#b600ff] hover:shadow-[0_0_30px_rgba(182,0,255,0.5)] focus:outline-none uppercase tracking-wider overflow-hidden transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50"
+                className="group relative flex w-full justify-center rounded-lg bg-transparent border-2 border-[#d4af37] px-4 py-3 text-sm font-bold text-[#d4af37] hover:shadow-[0_0_30px_rgba(182,0,255,0.5)] focus:outline-none uppercase tracking-wider overflow-hidden transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <span className="relative z-10 flex items-center justify-center">
                   {isAnalyzing && (
@@ -342,30 +345,30 @@ export default function OnchainVerifyPage() {
                    !hasVerification ? "Complete CEX Verification First" :
                    !isBound ? "Bind Address to Analyze" : "Analyze"}
                 </span>
-                <div className="absolute inset-0 bg-[#b600ff] opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-[#d4af37] opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
               </button>
 
               {/* Helper Messages */}
               {!currentAccount && (
-                <div className="rounded-lg border border-[#ff00e5]/30 bg-black/30 p-4">
+                <div className="rounded-lg border border-[#8b0000]/30 bg-black/30 p-4">
                   <p className="text-sm text-gray-300">
-                    <strong className="text-[#ff00e5]">Step 1:</strong> Please connect your Sui wallet to continue
+                    <strong className="text-[#8b0000]">Step 1:</strong> Please connect your Sui wallet to continue
                   </p>
                 </div>
               )}
 
               {currentAccount && !hasVerification && (
-                <div className="rounded-lg border border-[#ff00e5]/30 bg-black/30 p-4">
+                <div className="rounded-lg border border-[#8b0000]/30 bg-black/30 p-4">
                   <p className="text-sm text-gray-300">
-                    <strong className="text-[#ff00e5]">Step 2:</strong> Complete CEX verification first before binding your address
+                    <strong className="text-[#8b0000]">Step 2:</strong> Complete CEX verification first before binding your address
                   </p>
                 </div>
               )}
 
               {currentAccount && hasVerification && !isBound && (
-                <div className="rounded-lg border border-[#ff00e5]/30 bg-black/30 p-4">
+                <div className="rounded-lg border border-[#8b0000]/30 bg-black/30 p-4">
                   <p className="text-sm text-gray-300">
-                    <strong className="text-[#ff00e5]">Step 3:</strong> Bind your wallet address to your CEX verification to continue
+                    <strong className="text-[#8b0000]">Step 3:</strong> Bind your wallet address to your CEX verification to continue
                   </p>
                 </div>
               )}
@@ -373,7 +376,7 @@ export default function OnchainVerifyPage() {
               {/* Info Section */}
               <div className="rounded-lg glow-border p-4 bg-black/30">
                 <div className="flex gap-3">
-                  <svg className="h-5 w-5 text-[#00fff5] flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                  <svg className="h-5 w-5 text-[#c41e3a] flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                   </svg>
                   <p className="text-sm text-gray-300">
@@ -386,7 +389,7 @@ export default function OnchainVerifyPage() {
             <div className="mt-6 text-center">
               <a
                 href="/"
-                className="text-sm font-semibold text-[#b600ff] hover:text-[#00fff5] transition-colors uppercase tracking-wide"
+                className="text-sm font-semibold text-[#d4af37] hover:text-[#c41e3a] transition-colors uppercase tracking-wide"
               >
                 ← Back to Home
               </a>
