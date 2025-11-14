@@ -1,0 +1,91 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User Model - stores basic user information
+model User {
+  id              String           @id @default(cuid())
+  walletAddress   String           @unique
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  // Relations
+  verifications   Verification[]
+  addressBindings AddressBinding[]
+  analysisResults AnalysisResult[]
+
+  @@index([walletAddress])
+}
+
+// CEX Verification Model - stores verification from centralized exchanges
+model Verification {
+  id          String   @id @default(cuid())
+  userId      String   // CEX user identifier (e.g., "binance", "okx")
+  proofs      Json     // Array of proof objects
+  verified    Boolean  @default(false)
+  timestamp   DateTime @default(now())
+
+  // Relations
+  user        User     @relation(fields: [userWalletAddress], references: [walletAddress], onDelete: Cascade)
+  userWalletAddress String
+
+  @@index([userWalletAddress])
+  @@index([userId])
+}
+
+// Address Binding Model - stores wallet signature bindings
+model AddressBinding {
+  id        String   @id @default(cuid())
+  address   String
+  userId    String   // CEX user identifier
+  signature String?  // Wallet signature
+  message   String?  // Signed message
+  bound     Boolean  @default(true)
+  timestamp DateTime @default(now())
+
+  // Relations
+  user      User     @relation(fields: [address], references: [walletAddress], onDelete: Cascade)
+
+  @@unique([address, userId])
+  @@index([address])
+  @@index([userId])
+}
+
+// Analysis Result Model - stores onchain activity analysis
+model AnalysisResult {
+  id                      String   @id @default(cuid())
+  walletAddress           String
+  humanScore              Int
+  successRate             Float
+  totalTransactions       Int
+  successfulTransactions  Int
+  failedTransactions      Int
+  aiAnalysis              String?  @db.Text
+  createdAt               DateTime @default(now())
+
+  // Relations
+  user                    User     @relation(fields: [walletAddress], references: [walletAddress], onDelete: Cascade)
+
+  @@index([walletAddress])
+  @@index([humanScore])
+  @@index([createdAt])
+}
+
+// Verification Export Model - stores exported JSON verification data
+model VerificationExport {
+  id                String   @id @default(cuid())
+  walletAddress     String
+  exportData        Json     // Complete JSON export
+  createdAt         DateTime @default(now())
+
+  @@index([walletAddress])
+  @@index([createdAt])
+}

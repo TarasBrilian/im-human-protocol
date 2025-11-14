@@ -213,12 +213,12 @@ app.post('/api/reclaim/callback', async (req, res) => {
       });
     }
 
-    if (!proofs || proofs.length === 0) {
-      return res.status(400).json({
-        success: false,
-        error: 'No proofs provided'
-      });
-    }
+    // if (!proofs || proofs.length === 0) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     error: 'No proofs provided'
+    //   });
+    // }
 
     // Verify each proof
     const verifiedProofs = [];

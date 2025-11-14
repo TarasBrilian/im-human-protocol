@@ -65,11 +65,8 @@ export const fetchUserActivities = async (addressUser: string) => {
         }
       }
     );
-
-    console.log('Activities fetched successfully:', response.data);
     return response.data;
   } catch (err: any) {
-    console.error('Error fetching activities:', err.response?.data || err.message);
     throw err;
   }
 };

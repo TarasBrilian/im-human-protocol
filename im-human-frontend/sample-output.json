@@ -1,0 +1,33 @@
+{
+  "walletAddress": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+  "verification": {
+    "userId": "binance",
+    "proofs": [
+      {
+        "type": "cex_verification",
+        "exchange": "binance",
+        "verified": true
+      }
+    ],
+    "timestamp": 1700000000000,
+    "verified": true
+  },
+  "addressBinding": {
+    "address": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+    "userId": "binance",
+    "timestamp": 1700000000000,
+    "bound": true,
+    "signature": "base64_signature_here",
+    "message": "Bind wallet address to Im Human verification\n\nAddress: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef\nSources: binance\nTimestamp: 1700000000000"
+  },
+  "onchainScore": {
+    "humanScore": 78,
+    "successRate": 85.5,
+    "totalTransactions": 20,
+    "successfulTransactions": 17,
+    "failedTransactions": 3,
+    "aiAnalysis": "This wallet exhibits human-like transaction patterns with an 85.5% success rate. The presence of some failed transactions suggests natural human error patterns, indicating careful but imperfect behavior. The transaction diversity and timing patterns are consistent with authentic user activity rather than automated bot behavior."
+  },
+  "timestamp": 1700000000000,
+  "generatedAt": "2023-11-14T12:00:00.000Z"
+}
