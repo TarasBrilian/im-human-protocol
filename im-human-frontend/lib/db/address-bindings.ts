@@ -6,6 +6,7 @@ import { getOrCreateUser } from './users'
  */
 export async function saveAddressBinding(
   address: string,
+  cexType: string,
   userId: string,
   signature?: string,
   message?: string
@@ -15,9 +16,9 @@ export async function saveAddressBinding(
 
   return await prisma.addressBinding.upsert({
     where: {
-      address_userId: {
+      address_cexType: {
         address,
-        userId,
+        cexType,
       },
     },
     update: {
@@ -27,6 +28,7 @@ export async function saveAddressBinding(
     },
     create: {
       address,
+      cexType,
       userId,
       signature,
       message,
@@ -36,24 +38,24 @@ export async function saveAddressBinding(
 }
 
 /**
- * Get address binding
+ * Get address binding for specific CEX
  */
-export async function getAddressBinding(address: string, userId: string) {
+export async function getAddressBinding(address: string, cexType: string) {
   return await prisma.addressBinding.findUnique({
     where: {
-      address_userId: {
+      address_cexType: {
         address,
-        userId,
+        cexType,
       },
     },
   })
 }
 
 /**
- * Check if address is bound
+ * Check if address is bound to specific CEX
  */
-export async function isAddressBound(address: string, userId: string): Promise<boolean> {
-  const binding = await getAddressBinding(address, userId)
+export async function isAddressBound(address: string, cexType: string): Promise<boolean> {
+  const binding = await getAddressBinding(address, cexType)
   return binding !== null && binding.bound
 }
 

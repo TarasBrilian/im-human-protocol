@@ -161,7 +161,6 @@ export const analyzeWithAI = async (
     const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
 
     if (!apiKey) {
-      console.warn('OpenAI API key is not configured. Using fallback analysis.');
       return null;
     }
 
@@ -253,7 +252,6 @@ export const analyzeUserTransactions = async (addressUser: string): Promise<Anal
       aiAnalysis
     };
   } catch (err: any) {
-    console.error('Error analyzing user transactions:', err);
     throw err;
   }
 };

@@ -6,8 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // User Model - stores basic user information
@@ -17,10 +18,16 @@ model User {
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
 
+  // Prevent duplicate flags
+  hasCompletedVerification Boolean  @default(false)
+  hasCompletedAnalysis     Boolean  @default(false)
+  hasUploadedToWalrus      Boolean  @default(false)
+
   // Relations
   verifications   Verification[]
   addressBindings AddressBinding[]
   analysisResults AnalysisResult[]
+  walrusUploads   WalrusUpload[]
 
   @@index([walletAddress])
 }
@@ -28,23 +35,28 @@ model User {
 // CEX Verification Model - stores verification from centralized exchanges
 model Verification {
   id          String   @id @default(cuid())
-  userId      String   // CEX user identifier (e.g., "binance", "okx")
-  proofs      Json     // Array of proof objects
+  cexType     String   // "binance", "bybit", "okx", etc.
+  userId      String   // CEX user identifier
+  proofs      Json     // Array of proof objects from Reclaim
   verified    Boolean  @default(false)
+  sessionId   String?  // Reclaim session ID
   timestamp   DateTime @default(now())
 
   // Relations
   user        User     @relation(fields: [userWalletAddress], references: [walletAddress], onDelete: Cascade)
   userWalletAddress String
 
+  @@unique([userWalletAddress, cexType])
   @@index([userWalletAddress])
   @@index([userId])
+  @@index([cexType])
 }
 
 // Address Binding Model - stores wallet signature bindings
 model AddressBinding {
   id        String   @id @default(cuid())
   address   String
+  cexType   String   // Which CEX this binding is for
   userId    String   // CEX user identifier
   signature String?  // Wallet signature
   message   String?  // Signed message
@@ -54,15 +66,16 @@ model AddressBinding {
   // Relations
   user      User     @relation(fields: [address], references: [walletAddress], onDelete: Cascade)
 
-  @@unique([address, userId])
+  @@unique([address, cexType])
   @@index([address])
   @@index([userId])
+  @@index([cexType])
 }
 
 // Analysis Result Model - stores onchain activity analysis
 model AnalysisResult {
   id                      String   @id @default(cuid())
-  walletAddress           String
+  walletAddress           String   @unique
   humanScore              Int
   successRate             Float
   totalTransactions       Int
@@ -79,13 +92,18 @@ model AnalysisResult {
   @@index([createdAt])
 }
 
-// Verification Export Model - stores exported JSON verification data
-model VerificationExport {
+// Walrus Upload Model - stores Walrus blob uploads
+model WalrusUpload {
   id                String   @id @default(cuid())
-  walletAddress     String
-  exportData        Json     // Complete JSON export
-  createdAt         DateTime @default(now())
+  walletAddress     String   @unique
+  blobId            String   @unique
+  encryptedData     Json?    // Metadata about encrypted data
+  uploadedAt        DateTime @default(now())
+
+  // Relations
+  user              User     @relation(fields: [walletAddress], references: [walletAddress], onDelete: Cascade)
 
   @@index([walletAddress])
-  @@index([createdAt])
+  @@index([blobId])
+  @@index([uploadedAt])
 }

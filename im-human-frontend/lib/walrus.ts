@@ -24,16 +24,10 @@ export async function uploadToWalrus(
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Walrus upload error:', {
-        status: response.status,
-        statusText: response.statusText,
-        error: errorText,
-      });
       throw new Error(`Failed to upload to Walrus (${response.status}): ${errorText}`);
     }
 
     const result = await response.json();
-    console.log('Walrus upload response:', result);
 
     // Extract blob ID from response
     // Response can be either newlyCreated or alreadyCertified
@@ -52,10 +46,8 @@ export async function uploadToWalrus(
       return result.blobId;
     }
 
-    console.error('Unexpected Walrus response format:', result);
     throw new Error('Could not extract blob ID from Walrus response');
   } catch (error) {
-    console.error('Error uploading to Walrus:', error);
     throw error;
   }
 }
@@ -76,7 +68,6 @@ export async function downloadFromWalrus(blobId: string): Promise<Uint8Array> {
     const arrayBuffer = await response.arrayBuffer();
     return new Uint8Array(arrayBuffer);
   } catch (error) {
-    console.error('Error downloading from Walrus:', error);
     throw error;
   }
 }
@@ -98,7 +89,6 @@ export async function getBlobInfo(blobId: string) {
       contentType: response.headers.get('content-type'),
     };
   } catch (error) {
-    console.error('Error getting blob info:', error);
     return { exists: false, size: null, contentType: null };
   }
 }

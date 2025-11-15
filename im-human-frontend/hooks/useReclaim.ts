@@ -1,14 +1,6 @@
 import { useState, useCallback } from 'react';
 import { ReclaimProofRequest } from '@reclaimprotocol/js-sdk';
 
-interface KYCData {
-  kycStatus: string;
-  firstName: string;
-  lastName: string;
-  dob: string;
-  verified: boolean;
-}
-
 export function useReclaim() {
   const [proofs, setProofs] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -47,18 +39,15 @@ export function useReclaim() {
       // Start the session with callbacks
       await reclaimProofRequest.startSession({
         onSuccess: (proofs) => {
-          console.log('✅ Verification successful!', proofs);
           setProofs(proofs);
           setIsLoading(false);
         },
         onError: (err) => {
-          console.error('❌ Verification failed:', err);
           setError(err.message || 'Verification failed');
           setIsLoading(false);
         }
       });
     } catch (err) {
-      console.error('❌ Error starting verification:', err);
       setError(err instanceof Error ? err.message : 'An error occurred');
       setIsLoading(false);
     }

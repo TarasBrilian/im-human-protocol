@@ -68,7 +68,6 @@ export async function encryptWithSeal(
 
     return combined;
   } catch (error) {
-    console.error('Error encrypting data:', error);
     throw new Error('Failed to encrypt data');
   }
 }
@@ -104,7 +103,6 @@ export async function decryptWithSeal(
     const jsonString = new TextDecoder().decode(decryptedData);
     return JSON.parse(jsonString);
   } catch (error) {
-    console.error('Error decrypting data:', error);
     throw new Error('Failed to decrypt data');
   }
 }

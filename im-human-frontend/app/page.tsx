@@ -2,375 +2,384 @@
 
 import { useRouter } from "next/navigation";
 import Navbar from "./components/Navbar";
+import { Shield, Wallet, Brain, Database, CheckCircle, ArrowRight, ChevronDown, Fingerprint, Key, Eye, EyeOff, Zap, Lock } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 export default function Home() {
   const router = useRouter();
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const parallaxOffset = scrollY * 0.3;
 
   return (
     <>
       <Navbar />
 
-      {/* Scanline effect */}
-      <div className="scanline" />
-
-      {/* Matrix rain background */}
-      <div className="matrix-rain" />
-
-      <div className="min-h-screen bg-gradient-to-b from-[#0a0a0f] via-[#1a1a1a] to-[#0a0a0f] relative overflow-hidden">
+      <div className="bg-black text-white overflow-hidden">
         {/* Hero Section */}
-        <section className="px-4 pt-32 pb-20 relative grid-background">
-          <div className="max-w-6xl mx-auto text-center relative z-10">
-            {/* Floating ninja icon */}
-            <div className="flex justify-center mb-8 animate-float">
-              <div className="relative">
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#c41e3a] via-[#8b0000] to-[#d4af37] opacity-25 blur-xl absolute top-0 left-0 animate-pulse-glow"></div>
-                <svg className="w-24 h-24 relative z-10" fill="none" viewBox="0 0 24 24" stroke="#c41e3a" strokeWidth="1.5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-                </svg>
+        <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+          {/* Animated Background */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-blue-950/10 to-black"></div>
+
+          {/* Grid Pattern */}
+          <div className="absolute inset-0 opacity-20">
+            <div className="absolute inset-0" style={{
+              backgroundImage: `linear-gradient(rgba(6, 182, 212, 0.1) 1px, transparent 1px),
+                               linear-gradient(90deg, rgba(6, 182, 212, 0.1) 1px, transparent 1px)`,
+              backgroundSize: '50px 50px'
+            }}></div>
+          </div>
+
+          {/* Floating Orbs */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+          </div>
+
+          {/* Floating Kanji */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{ transform: `translateY(${parallaxOffset}px)` }}
+          >
+            <div className="absolute top-32 left-1/4 text-9xl text-cyan-900/10 font-bold" style={{ fontFamily: "'Noto Serif JP', serif" }}>
+              人
+            </div>
+            <div className="absolute top-64 right-1/4 text-8xl text-blue-900/10 font-bold" style={{ fontFamily: "'Noto Serif JP', serif" }}>
+              証
+            </div>
+            <div className="absolute bottom-32 left-1/3 text-7xl text-cyan-900/10 font-bold" style={{ fontFamily: "'Noto Serif JP', serif" }}>
+              明
+            </div>
+          </div>
+
+          {/* Main Content */}
+          <div className="relative z-10 text-center px-6 max-w-6xl">
+            <div className="inline-block mb-6">
+              <div className="px-4 py-2 bg-cyan-500/10 border border-cyan-500/30 rounded-full">
+                <span className="text-cyan-400 text-sm tracking-wide">Powered by zkTLS Reclaim Protocol</span>
               </div>
             </div>
 
-            <h1 className="text-6xl md:text-8xl font-bold tracking-tight mb-6 animate-fade-in gradient-text glitch">
-              Im Human
+            <h1 className="text-6xl md:text-8xl font-bold mb-6 tracking-tight">
+              <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                Im Human
+              </span>
             </h1>
-            <div className="h-1 w-32 mx-auto mb-8 bg-gradient-to-r from-transparent via-[#c41e3a] to-transparent animate-pulse"></div>
 
-            <p className="text-xl md:text-3xl text-[#c41e3a] mb-4 max-w-3xl mx-auto animate-slide-up stagger-1 font-mono">
-              Privacy-Preserving Human Verification Protocol
-            </p>
-            <p className="text-base md:text-lg text-gray-400 max-w-2xl mx-auto animate-slide-up stagger-2 leading-relaxed">
-              Verify you&apos;re human using your existing CEX KYC data without revealing your identity through advanced zero-knowledge cryptography
+            <p className="text-xl md:text-2xl text-gray-400 mb-4 max-w-3xl mx-auto leading-relaxed">
+              Prove Your Humanity Without Revealing Your Identity
             </p>
 
-            <div className="mt-12 flex flex-col sm:flex-row gap-6 justify-center animate-slide-up stagger-3">
+            <p className="text-lg text-gray-500 mb-12 max-w-2xl mx-auto">
+              Privacy-preserving human verification using zero-knowledge proofs and AI-powered on-chain analysis
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <button
                 onClick={() => router.push("/cex-verify")}
-                className="group relative px-8 py-4 bg-gradient-to-br from-[#1a1a1a] to-black border-2 border-[#c41e3a] text-[#c41e3a] rounded-lg font-semibold uppercase tracking-wider overflow-hidden transition-all duration-300 hover:shadow-[0_0_30px_rgba(196,30,58,0.6)] hover:scale-105 hover:border-[#d4af37] hover:text-[#d4af37]"
+                className="group px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 rounded-lg transition-all transform hover:scale-105 shadow-lg shadow-cyan-500/30 flex items-center gap-2"
               >
-                <span className="relative z-10">Verify with CEX KYC</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-[#c41e3a]/10 to-[#d4af37]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <span className="text-lg font-semibold">Start Verification</span>
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
               <button
                 onClick={() => router.push("/onchain-verify")}
-                className="group relative px-8 py-4 bg-gradient-to-br from-[#1a1a1a] to-black border-2 border-[#d4af37] text-[#d4af37] rounded-lg font-semibold uppercase tracking-wider overflow-hidden transition-all duration-300 hover:shadow-[0_0_30px_rgba(212,175,55,0.6)] hover:scale-105 hover:border-[#c41e3a] hover:text-[#c41e3a]"
+                className="px-8 py-4 border-2 border-cyan-500 hover:bg-cyan-500/10 rounded-lg transition-all transform hover:scale-105"
               >
-                <span className="relative z-10">Onchain Verification</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-[#d4af37]/10 to-[#c41e3a]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <span className="text-lg">Onchain Verification</span>
               </button>
             </div>
 
-            {/* Decorative elements - Ninja theme */}
-            <div className="absolute top-20 left-10 w-2 h-2 bg-[#c41e3a] rounded-full animate-pulse opacity-60 shadow-sm shadow-[#c41e3a]"></div>
-            <div className="absolute top-40 right-20 w-2 h-2 bg-[#d4af37] rounded-full animate-pulse opacity-60 shadow-sm shadow-[#d4af37]" style={{animationDelay: '0.5s'}}></div>
-            <div className="absolute bottom-20 left-20 w-2 h-2 bg-[#8b0000] rounded-full animate-pulse opacity-60 shadow-sm shadow-[#8b0000]" style={{animationDelay: '1s'}}></div>
-          </div>
-        </section>
-
-        {/* What is Im Human Section */}
-        <section className="px-4 py-20 relative">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-12 text-center animate-slide-up">
-              <span className="gradient-text">What is Im Human?</span>
-            </h2>
-            <div className="max-w-4xl mx-auto holographic rounded-2xl p-8 md:p-12 animate-scale-in">
-              <p className="text-gray-300 text-center text-lg leading-relaxed mb-6">
-                Im Human is a revolutionary identity verification protocol that leverages <span className="text-[#c41e3a] font-bold">zero-knowledge proofs</span> and <span className="text-[#d4af37] font-bold">zkTLS (Zero-Knowledge Transport Layer Security)</span> to prove you&apos;re a verified human without exposing your personal information.
-              </p>
-              <p className="text-gray-300 text-center text-lg leading-relaxed">
-                By utilizing your existing KYC verification from centralized exchanges (CEX), you can generate cryptographic proofs that confirm your humanity while maintaining <span className="text-[#c41e3a] font-bold">complete privacy</span>.
-              </p>
+            {/* Stats */}
+            <div className="grid grid-cols-3 gap-8 mt-20 max-w-3xl mx-auto">
+              <div className="text-center">
+                <div className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent mb-2">
+                  100%
+                </div>
+                <div className="text-sm text-gray-500">Privacy Protected</div>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent mb-2">
+                  0-100
+                </div>
+                <div className="text-sm text-gray-500">Human Score</div>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent mb-2">
+                  zkTLS
+                </div>
+                <div className="text-sm text-gray-500">Zero-Knowledge</div>
+              </div>
             </div>
+          </div>
+
+          {/* Scroll Indicator */}
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <ChevronDown className="w-8 h-8 text-cyan-400" />
           </div>
         </section>
 
         {/* How It Works Section */}
-        <section className="px-4 py-20 relative grid-background">
-          <div className="max-w-6xl mx-auto relative z-10">
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-16 text-center">
-              <span className="gradient-text">How It Works</span>
-            </h2>
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="holographic p-8 rounded-xl animate-slide-up stagger-1 group">
-                <div className="w-16 h-16 glow-border rounded-lg flex items-center justify-center mb-6 mx-auto bg-black/50 group-hover:animate-pulse-glow transition-all duration-300">
-                  <svg className="w-8 h-8 text-[#c41e3a]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
-                </div>
-                <div className="text-center mb-3">
-                  <span className="text-[#c41e3a] text-sm font-mono font-bold">STEP 01</span>
-                </div>
-                <h3 className="text-xl font-bold text-white mb-4 text-center">
-                  Connect Your CEX
-                </h3>
-                <p className="text-gray-400 text-center leading-relaxed">
-                  Connect to your Binance account (or other supported exchanges) through a secure zkTLS connection powered by Reclaim Protocol.
-                </p>
+        <section id="how-it-works" className="relative py-32 px-6 bg-gradient-to-b from-black via-gray-900/50 to-black">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-20">
+              <div className="inline-block mb-4">
+                <span className="text-cyan-400 text-sm tracking-[0.3em] uppercase">Verification Process</span>
               </div>
-
-              <div className="holographic p-8 rounded-xl animate-slide-up stagger-2 group">
-                <div className="w-16 h-16 glow-border-purple rounded-lg flex items-center justify-center mb-6 mx-auto bg-black/50 group-hover:animate-pulse-glow transition-all duration-300">
-                  <svg className="w-8 h-8 text-[#d4af37]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
-                </div>
-                <div className="text-center mb-3">
-                  <span className="text-[#d4af37] text-sm font-mono font-bold">STEP 02</span>
-                </div>
-                <h3 className="text-xl font-bold text-white mb-4 text-center">
-                  Generate Zero-Knowledge Proof
-                </h3>
-                <p className="text-gray-400 text-center leading-relaxed">
-                  Your KYC status is verified and converted into a cryptographic proof using zkTLS technology - no personal data is exposed.
-                </p>
-              </div>
-
-              <div className="holographic p-8 rounded-xl animate-slide-up stagger-3 group">
-                <div className="w-16 h-16 glow-border-pink rounded-lg flex items-center justify-center mb-6 mx-auto bg-black/50 group-hover:animate-pulse-glow transition-all duration-300">
-                  <svg className="w-8 h-8 text-[#8b0000]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <div className="text-center mb-3">
-                  <span className="text-[#8b0000] text-sm font-mono font-bold">STEP 03</span>
-                </div>
-                <h3 className="text-xl font-bold text-white mb-4 text-center">
-                  Verify Anywhere
-                </h3>
-                <p className="text-gray-400 text-center leading-relaxed">
-                  Use your proof to verify your humanity across DApps, DAOs, and Web3 platforms without revealing your identity.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* AI-Powered Onchain Analysis Section */}
-        <section className="px-4 py-20 relative">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-12">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#d4af37]/30 bg-black/30 mb-6">
-                <div className="w-2 h-2 bg-[#d4af37] rounded-full animate-pulse"></div>
-                <span className="text-sm font-mono text-[#d4af37] uppercase tracking-wide">AI-Powered Analysis</span>
-              </div>
-              <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-                <span className="gradient-text">Intelligent Onchain Behavior Verification</span>
+              <h2 className="text-5xl md:text-7xl font-bold mb-6">
+                How It Works
               </h2>
-              <p className="text-lg text-gray-400 max-w-3xl mx-auto">
-                Our advanced AI analyzes your onchain transaction history to verify genuine human behavior patterns
+              <p className="text-lg text-gray-500 max-w-2xl mx-auto">
+                Four simple steps to prove your humanity while maintaining complete privacy
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8 mb-12">
-              {/* Left: Main Feature Card */}
-              <div className="holographic rounded-2xl p-8 space-y-6">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-16 h-16 glow-border-purple rounded-lg flex items-center justify-center bg-black/50 animate-pulse-glow">
-                    <svg className="w-8 h-8 text-[#d4af37]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-bold text-white">AI Transaction Analysis</h3>
-                    <p className="text-sm text-[#d4af37] font-mono">Powered by OpenAI</p>
-                  </div>
-                </div>
+            <div className="relative">
+              {/* Connection Line */}
+              <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500/20 via-cyan-500/40 to-cyan-500/20 transform -translate-y-1/2"></div>
 
-                <div className="space-y-4">
-                  <div className="flex gap-3">
-                    <div className="flex-shrink-0 mt-1">
-                      <div className="w-6 h-6 rounded-full bg-[#c41e3a]/20 flex items-center justify-center">
-                        <svg className="w-4 h-4 text-[#c41e3a]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                        </svg>
+              {/* Steps */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                {/* Step 1: CEX Verification */}
+                <div className="relative group">
+                  <div className="relative bg-gradient-to-br from-gray-900 to-black p-8 rounded-2xl border border-cyan-900/30 hover:border-cyan-500/50 transition-all duration-300 transform hover:scale-105 h-full">
+                    <div className="absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center text-xl font-bold shadow-lg shadow-cyan-500/30">
+                      1
+                    </div>
+                    <div className="mb-6">
+                      <div className="w-16 h-16 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Shield className="w-8 h-8 text-cyan-400" />
                       </div>
                     </div>
-                    <div>
-                      <h4 className="text-white font-semibold mb-1">Pattern Recognition</h4>
-                      <p className="text-gray-400 text-sm leading-relaxed">
-                        Identifies organic transaction patterns vs automated bot behavior through sophisticated ML algorithms
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-3">
-                    <div className="flex-shrink-0 mt-1">
-                      <div className="w-6 h-6 rounded-full bg-[#c41e3a]/20 flex items-center justify-center">
-                        <svg className="w-4 h-4 text-[#c41e3a]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                        </svg>
+                    <h3 className="text-2xl font-bold mb-3">CEX Verification</h3>
+                    <p className="text-gray-400 mb-6 leading-relaxed">
+                      Connect your Binance account using zkTLS Reclaim Protocol
+                    </p>
+                    <div className="space-y-2">
+                      <div className="flex items-start gap-2 text-sm text-gray-500">
+                        <CheckCircle className="w-4 h-4 text-cyan-500 flex-shrink-0 mt-0.5" />
+                        <span>Privacy-preserving verification</span>
+                      </div>
+                      <div className="flex items-start gap-2 text-sm text-gray-500">
+                        <CheckCircle className="w-4 h-4 text-cyan-500 flex-shrink-0 mt-0.5" />
+                        <span>No identity disclosure</span>
+                      </div>
+                      <div className="flex items-start gap-2 text-sm text-gray-500">
+                        <CheckCircle className="w-4 h-4 text-cyan-500 flex-shrink-0 mt-0.5" />
+                        <span>Instant proof generation</span>
                       </div>
                     </div>
-                    <div>
-                      <h4 className="text-white font-semibold mb-1">Spam Detection</h4>
-                      <p className="text-gray-400 text-sm leading-relaxed">
-                        Automatically flags suspicious activities including airdrop farming, wash trading, and sybil attacks
-                      </p>
+                    <div className="hidden lg:block absolute top-1/2 -right-12 transform -translate-y-1/2">
+                      <ArrowRight className="w-8 h-8 text-cyan-500/50" />
                     </div>
                   </div>
+                </div>
 
-                  <div className="flex gap-3">
-                    <div className="flex-shrink-0 mt-1">
-                      <div className="w-6 h-6 rounded-full bg-[#c41e3a]/20 flex items-center justify-center">
-                        <svg className="w-4 h-4 text-[#c41e3a]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                        </svg>
+                {/* Step 2: Wallet Connection */}
+                <div className="relative group">
+                  <div className="relative bg-gradient-to-br from-gray-900 to-black p-8 rounded-2xl border border-cyan-900/30 hover:border-cyan-500/50 transition-all duration-300 transform hover:scale-105 h-full">
+                    <div className="absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center text-xl font-bold shadow-lg shadow-cyan-500/30">
+                      2
+                    </div>
+                    <div className="mb-6">
+                      <div className="w-16 h-16 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Wallet className="w-8 h-8 text-cyan-400" />
                       </div>
                     </div>
-                    <div>
-                      <h4 className="text-white font-semibold mb-1">Human Score Rating</h4>
-                      <p className="text-gray-400 text-sm leading-relaxed">
-                        Generates a comprehensive 0-100 trust score based on transaction diversity, timing patterns, and wallet age
-                      </p>
+                    <h3 className="text-2xl font-bold mb-3">Wallet Connection</h3>
+                    <p className="text-gray-400 mb-6 leading-relaxed">
+                      Connect your Sui wallet and bind your address
+                    </p>
+                    <div className="space-y-2">
+                      <div className="flex items-start gap-2 text-sm text-gray-500">
+                        <CheckCircle className="w-4 h-4 text-cyan-500 flex-shrink-0 mt-0.5" />
+                        <span>Sui network integration</span>
+                      </div>
+                      <div className="flex items-start gap-2 text-sm text-gray-500">
+                        <CheckCircle className="w-4 h-4 text-cyan-500 flex-shrink-0 mt-0.5" />
+                        <span>Secure address binding</span>
+                      </div>
+                      <div className="flex items-start gap-2 text-sm text-gray-500">
+                        <CheckCircle className="w-4 h-4 text-cyan-500 flex-shrink-0 mt-0.5" />
+                        <span>Proof association</span>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Right: Stats & Benefits */}
-              <div className="space-y-6">
-                <div className="holographic rounded-xl p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#c41e3a]/20 to-[#8b0000]/20 flex items-center justify-center flex-shrink-0">
-                      <svg className="w-6 h-6 text-[#c41e3a]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h4 className="text-white font-bold mb-2">Real-time Analysis</h4>
-                      <p className="text-gray-400 text-sm">
-                        Instant evaluation of your entire transaction history across multiple chains with actionable insights
-                      </p>
+                    <div className="hidden lg:block absolute top-1/2 -right-12 transform -translate-y-1/2">
+                      <ArrowRight className="w-8 h-8 text-cyan-500/50" />
                     </div>
                   </div>
                 </div>
 
-                <div className="holographic rounded-xl p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#d4af37]/20 to-[#c0c0c0]/20 flex items-center justify-center flex-shrink-0">
-                      <svg className="w-6 h-6 text-[#d4af37]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                      </svg>
+                {/* Step 3: AI Analysis */}
+                <div className="relative group">
+                  <div className="relative bg-gradient-to-br from-gray-900 to-black p-8 rounded-2xl border border-cyan-900/30 hover:border-cyan-500/50 transition-all duration-300 transform hover:scale-105 h-full">
+                    <div className="absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center text-xl font-bold shadow-lg shadow-cyan-500/30">
+                      3
                     </div>
-                    <div>
-                      <h4 className="text-white font-bold mb-2">Sybil Resistance</h4>
-                      <p className="text-gray-400 text-sm">
-                        Advanced detection of coordinated multi-wallet attacks and farming operations to protect protocols
-                      </p>
+                    <div className="mb-6">
+                      <div className="w-16 h-16 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Brain className="w-8 h-8 text-cyan-400" />
+                      </div>
+                    </div>
+                    <h3 className="text-2xl font-bold mb-3">AI Analysis</h3>
+                    <p className="text-gray-400 mb-6 leading-relaxed">
+                      AI analyzes your on-chain transactions and activities
+                    </p>
+                    <div className="space-y-2">
+                      <div className="flex items-start gap-2 text-sm text-gray-500">
+                        <CheckCircle className="w-4 h-4 text-cyan-500 flex-shrink-0 mt-0.5" />
+                        <span>Transaction pattern analysis</span>
+                      </div>
+                      <div className="flex items-start gap-2 text-sm text-gray-500">
+                        <CheckCircle className="w-4 h-4 text-cyan-500 flex-shrink-0 mt-0.5" />
+                        <span>Activity verification</span>
+                      </div>
+                      <div className="flex items-start gap-2 text-sm text-gray-500">
+                        <CheckCircle className="w-4 h-4 text-cyan-500 flex-shrink-0 mt-0.5" />
+                        <span>Human score calculation (0-100)</span>
+                      </div>
+                    </div>
+                    <div className="hidden lg:block absolute top-1/2 -right-12 transform -translate-y-1/2">
+                      <ArrowRight className="w-8 h-8 text-cyan-500/50" />
                     </div>
                   </div>
                 </div>
 
-                <div className="holographic rounded-xl p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#8b0000]/20 to-[#c41e3a]/20 flex items-center justify-center flex-shrink-0">
-                      <svg className="w-6 h-6 text-[#8b0000]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                      </svg>
+                {/* Step 4: Walrus Storage */}
+                <div className="relative group">
+                  <div className="relative bg-gradient-to-br from-gray-900 to-black p-8 rounded-2xl border border-cyan-900/30 hover:border-cyan-500/50 transition-all duration-300 transform hover:scale-105 h-full">
+                    <div className="absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center text-xl font-bold shadow-lg shadow-cyan-500/30">
+                      4
                     </div>
-                    <div>
-                      <h4 className="text-white font-bold mb-2">Transparent Metrics</h4>
-                      <p className="text-gray-400 text-sm">
-                        Clear breakdown of transaction success rates, interaction diversity, and behavioral consistency
-                      </p>
+                    <div className="mb-6">
+                      <div className="w-16 h-16 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Database className="w-8 h-8 text-cyan-400" />
+                      </div>
+                    </div>
+                    <h3 className="text-2xl font-bold mb-3">Walrus Storage</h3>
+                    <p className="text-gray-400 mb-6 leading-relaxed">
+                      Encrypt and submit your verification to Walrus
+                    </p>
+                    <div className="space-y-2">
+                      <div className="flex items-start gap-2 text-sm text-gray-500">
+                        <CheckCircle className="w-4 h-4 text-cyan-500 flex-shrink-0 mt-0.5" />
+                        <span>JSON data wrapping</span>
+                      </div>
+                      <div className="flex items-start gap-2 text-sm text-gray-500">
+                        <CheckCircle className="w-4 h-4 text-cyan-500 flex-shrink-0 mt-0.5" />
+                        <span>Seal encryption</span>
+                      </div>
+                      <div className="flex items-start gap-2 text-sm text-gray-500">
+                        <CheckCircle className="w-4 h-4 text-cyan-500 flex-shrink-0 mt-0.5" />
+                        <span>Decentralized storage</span>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Bottom CTA */}
-            <div className="text-center">
-              <div className="inline-block glow-border rounded-2xl p-8 bg-black/30">
-                <p className="text-lg text-gray-300 mb-4">
-                  Combine <span className="text-[#c41e3a] font-bold">CEX KYC verification</span> with <span className="text-[#d4af37] font-bold">AI-powered onchain analysis</span> for the strongest proof of humanity
-                </p>
-                <button
-                  onClick={() => router.push("/onchain-verify")}
-                  className="group relative px-8 py-3 bg-gradient-to-br from-[#1a1a1a] to-black border-2 border-[#d4af37] text-[#d4af37] rounded-lg font-semibold uppercase tracking-wider overflow-hidden transition-all duration-300 hover:shadow-[0_0_30px_rgba(212,175,55,0.6)] hover:scale-105 hover:border-[#c41e3a] hover:text-[#c41e3a]"
-                >
-                  <span className="relative z-10">Try AI Analysis Now</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#d4af37]/10 to-[#c41e3a]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </button>
-              </div>
+            {/* CTA */}
+            <div className="mt-16 text-center">
+              <button
+                onClick={() => router.push("/cex-verify")}
+                className="px-10 py-5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 rounded-xl transition-all transform hover:scale-105 shadow-lg shadow-cyan-500/30 text-lg font-semibold"
+              >
+                Start Your Verification Now
+              </button>
             </div>
           </div>
         </section>
 
         {/* Features Section */}
-        <section className="px-4 py-20 relative">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-16 text-center">
-              <span className="gradient-text">Features</span>
-            </h2>
-            <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
-              <div className="flex gap-4 holographic p-6 rounded-xl animate-slide-up stagger-1 group">
-                <div className="flex-shrink-0">
-                  <div className="w-12 h-12 glow-border rounded-lg flex items-center justify-center bg-black/50 group-hover:animate-pulse-glow transition-all">
-                    <svg className="w-6 h-6 text-[#c41e3a]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                    </svg>
-                  </div>
+        <section id="features" className="relative py-32 px-6 bg-black">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-20">
+              <span className="text-cyan-400 text-sm tracking-[0.3em] uppercase">Core Features</span>
+              <h2 className="text-5xl md:text-7xl font-bold mt-4 mb-6">
+                Why Im Human
+              </h2>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Feature 1: Zero-Knowledge Privacy */}
+              <div className="group relative bg-gradient-to-br from-gray-900 to-black p-8 rounded-2xl border border-cyan-900/30 hover:border-cyan-500/50 transition-all duration-300 overflow-hidden">
+                <div
+                  className="absolute top-0 right-0 text-9xl text-cyan-900/5 font-bold -mr-8 -mt-4 group-hover:text-cyan-900/10 transition-colors"
+                  style={{ fontFamily: "'Noto Serif JP', serif" }}
+                >
+                  秘密
                 </div>
-                <div>
-                  <h3 className="text-lg font-bold text-white mb-2">
-                    CEX KYC Verification
-                  </h3>
+                <div className="relative z-10">
+                  <div className="w-16 h-16 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <EyeOff className="w-8 h-8 text-cyan-400" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-4">Zero-Knowledge Privacy</h3>
                   <p className="text-gray-400 leading-relaxed">
-                    Leverage your existing Binance KYC verification to prove humanity without re-uploading documents.
+                    Verify your humanity without revealing your identity using zkTLS technology
                   </p>
                 </div>
               </div>
 
-              <div className="flex gap-4 holographic p-6 rounded-xl animate-slide-up stagger-2 group">
-                <div className="flex-shrink-0">
-                  <div className="w-12 h-12 glow-border-purple rounded-lg flex items-center justify-center bg-black/50 group-hover:animate-pulse-glow transition-all">
-                    <svg className="w-6 h-6 text-[#d4af37]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                  </div>
+              {/* Feature 2: AI-Powered Analysis */}
+              <div className="group relative bg-gradient-to-br from-gray-900 to-black p-8 rounded-2xl border border-cyan-900/30 hover:border-cyan-500/50 transition-all duration-300 overflow-hidden">
+                <div
+                  className="absolute top-0 right-0 text-9xl text-cyan-900/5 font-bold -mr-8 -mt-4 group-hover:text-cyan-900/10 transition-colors"
+                  style={{ fontFamily: "'Noto Serif JP', serif" }}
+                >
+                  知能
                 </div>
-                <div>
-                  <h3 className="text-lg font-bold text-white mb-2">
-                    Onchain Verification
-                  </h3>
+                <div className="relative z-10">
+                  <div className="w-16 h-16 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <Brain className="w-8 h-8 text-cyan-400" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-4">AI-Powered Analysis</h3>
                   <p className="text-gray-400 leading-relaxed">
-                    Store and verify proofs onchain for permanent, decentralized human verification.
+                    Advanced on-chain analysis determines authentic human behavior patterns
                   </p>
                 </div>
               </div>
 
-              <div className="flex gap-4 holographic p-6 rounded-xl animate-slide-up stagger-4 group">
-                <div className="flex-shrink-0">
-                  <div className="w-12 h-12 glow-border rounded-lg flex items-center justify-center bg-black/50 group-hover:animate-pulse-glow transition-all">
-                    <svg className="w-6 h-6 text-[#c41e3a]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-                    </svg>
-                  </div>
+              {/* Feature 3: Decentralized Storage */}
+              <div className="group relative bg-gradient-to-br from-gray-900 to-black p-8 rounded-2xl border border-cyan-900/30 hover:border-cyan-500/50 transition-all duration-300 overflow-hidden">
+                <div
+                  className="absolute top-0 right-0 text-9xl text-cyan-900/5 font-bold -mr-8 -mt-4 group-hover:text-cyan-900/10 transition-colors"
+                  style={{ fontFamily: "'Noto Serif JP', serif" }}
+                >
+                  分散
                 </div>
-                <div>
-                  <h3 className="text-lg font-bold text-white mb-2">
-                    Powered by zkTLS
-                  </h3>
+                <div className="relative z-10">
+                  <div className="w-16 h-16 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <Lock className="w-8 h-8 text-cyan-400" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-4">Decentralized Storage</h3>
                   <p className="text-gray-400 leading-relaxed">
-                    Built on Reclaim Protocol&apos;s zkTLS technology for secure, verifiable proofs from web2 data.
+                    Your verification data is encrypted and stored on Walrus network
                   </p>
                 </div>
               </div>
 
-              <div className="flex gap-4 holographic p-6 rounded-xl animate-slide-up stagger-6 group">
-                <div className="flex-shrink-0">
-                  <div className="w-12 h-12 glow-border-pink rounded-lg flex items-center justify-center bg-black/50 group-hover:animate-pulse-glow transition-all">
-                    <svg className="w-6 h-6 text-[#8b0000]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
-                  </div>
+              {/* Feature 4: Instant Verification */}
+              <div className="group relative bg-gradient-to-br from-gray-900 to-black p-8 rounded-2xl border border-cyan-900/30 hover:border-cyan-500/50 transition-all duration-300 overflow-hidden">
+                <div
+                  className="absolute top-0 right-0 text-9xl text-cyan-900/5 font-bold -mr-8 -mt-4 group-hover:text-cyan-900/10 transition-colors"
+                  style={{ fontFamily: "'Noto Serif JP', serif" }}
+                >
+                  瞬時
                 </div>
-                <div>
-                  <h3 className="text-lg font-bold text-white mb-2">
-                    Human Score Rating
-                  </h3>
+                <div className="relative z-10">
+                  <div className="w-16 h-16 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <Zap className="w-8 h-8 text-cyan-400" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-4">Instant Verification</h3>
                   <p className="text-gray-400 leading-relaxed">
-                    Comprehensive trust scoring system (0-100) based on transaction diversity, timing patterns, wallet age, and interaction quality.
+                    Get your human score in seconds, from 0 to 100 based on on-chain activity
                   </p>
                 </div>
               </div>
@@ -378,57 +387,92 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Technology Section */}
-        <section className="px-4 py-20 relative grid-background">
-          <div className="max-w-6xl mx-auto relative z-10">
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-12 text-center">
-              <span className="gradient-text">Technology Stack</span>
-            </h2>
-            <div className="holographic rounded-2xl p-8 md:p-12">
-              <div className="grid md:grid-cols-2 gap-8">
-                <div className="group">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-2 h-2 bg-[#c41e3a] rounded-full animate-pulse shadow-sm shadow-[#c41e3a]"></div>
-                    <h3 className="text-xl font-bold text-white group-hover:text-[#c41e3a] transition-colors">
-                      zkTLS (Zero-Knowledge TLS)
-                    </h3>
-                  </div>
-                  <p className="text-gray-400 leading-relaxed pl-5">
-                    Enables secure verification of data from HTTPS connections without exposing the actual data or credentials.
+        {/* Technology Stack Section */}
+        <section id="technology" className="relative py-32 px-6 bg-gradient-to-b from-black via-blue-950/10 to-black">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-20">
+              <span className="text-cyan-400 text-sm tracking-[0.3em] uppercase">Powered By</span>
+              <h2 className="text-5xl md:text-7xl font-bold mt-4 mb-6">
+                Technology Stack
+              </h2>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8 mb-16">
+              {/* Reclaim Protocol */}
+              <div className="relative group bg-gradient-to-br from-gray-900 to-black p-8 rounded-2xl border border-cyan-900/30 hover:border-cyan-500/50 transition-all transform hover:scale-105">
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-pink-500 opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity"></div>
+                <div className="relative z-10">
+                  <h3 className="text-2xl font-bold mb-3">Reclaim Protocol</h3>
+                  <p className="text-gray-400 leading-relaxed">
+                    zkTLS technology for privacy-preserving CEX verification
                   </p>
                 </div>
-                <div className="group">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-2 h-2 bg-[#8b0000] rounded-full animate-pulse shadow-sm shadow-[#8b0000]" style={{animationDelay: '0.4s'}}></div>
-                    <h3 className="text-xl font-bold text-white group-hover:text-[#8b0000] transition-colors">
-                      OpenAI Integration
-                    </h3>
-                  </div>
-                  <p className="text-gray-400 leading-relaxed pl-5">
-                    Advanced AI models analyze transaction patterns to detect bots, spam, and verify authentic human behavior with high accuracy.
+              </div>
+
+              {/* Sui Network */}
+              <div className="relative group bg-gradient-to-br from-gray-900 to-black p-8 rounded-2xl border border-cyan-900/30 hover:border-cyan-500/50 transition-all transform hover:scale-105">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-cyan-500 opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity"></div>
+                <div className="relative z-10">
+                  <h3 className="text-2xl font-bold mb-3">Sui Network</h3>
+                  <p className="text-gray-400 leading-relaxed">
+                    High-performance blockchain for wallet connection and on-chain data
                   </p>
                 </div>
-                <div className="group">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-2 h-2 bg-[#c41e3a] rounded-full animate-pulse shadow-sm shadow-[#c41e3a]" style={{animationDelay: '0.6s'}}></div>
-                    <h3 className="text-xl font-bold text-white group-hover:text-[#c41e3a] transition-colors">
-                      Smart Contracts
-                    </h3>
-                  </div>
-                  <p className="text-gray-400 leading-relaxed pl-5">
-                    Onchain verification system for permanent, trustless human verification records on Sui blockchain.
+              </div>
+
+              {/* Walrus Storage */}
+              <div className="relative group bg-gradient-to-br from-gray-900 to-black p-8 rounded-2xl border border-cyan-900/30 hover:border-cyan-500/50 transition-all transform hover:scale-105">
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500 to-teal-500 opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity"></div>
+                <div className="relative z-10">
+                  <h3 className="text-2xl font-bold mb-3">Walrus Storage</h3>
+                  <p className="text-gray-400 leading-relaxed">
+                    Decentralized storage with seal encryption for verification data
                   </p>
                 </div>
-                <div className="group">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-2 h-2 bg-[#8b0000] rounded-full animate-pulse shadow-sm shadow-[#8b0000]" style={{animationDelay: '1s'}}></div>
-                    <h3 className="text-xl font-bold text-white group-hover:text-[#8b0000] transition-colors">
-                      Privacy First
-                    </h3>
+              </div>
+            </div>
+
+            {/* Human Score Visualization */}
+            <div className="bg-gradient-to-br from-gray-900 to-black p-10 rounded-3xl border border-cyan-900/30">
+              <div className="text-center mb-8">
+                <h3 className="text-3xl font-bold mb-2">AI-Powered Human Score</h3>
+                <p className="text-gray-400">Your on-chain activity determines your humanity score</p>
+              </div>
+
+              <div className="relative max-w-2xl mx-auto">
+                {/* Score Bar */}
+                <div className="h-8 bg-gray-800 rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-red-500 via-yellow-500 via-cyan-500 to-green-500 w-full flex items-center justify-between px-4 text-xs font-bold">
+                    <span>0</span>
+                    <span>25</span>
+                    <span>50</span>
+                    <span>75</span>
+                    <span>100</span>
                   </div>
-                  <p className="text-gray-400 leading-relaxed pl-5">
-                    No personal data is stored or transmitted - only cryptographic proofs that you control with zero-knowledge privacy.
-                  </p>
+                </div>
+
+                {/* Score Labels */}
+                <div className="flex justify-between mt-4 text-sm">
+                  <div className="text-center">
+                    <div className="text-red-400 font-bold">Bot-Like</div>
+                    <div className="text-gray-600">0-40</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-yellow-400 font-bold">Suspicious</div>
+                    <div className="text-gray-600">41-70</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-cyan-400 font-bold">Likely Human</div>
+                    <div className="text-gray-600">71-90</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-green-400 font-bold">Verified Human</div>
+                    <div className="text-gray-600">91-100</div>
+                  </div>
+                </div>
+
+                <div className="mt-8 text-center text-gray-500 text-sm">
+                  AI analyzes transaction patterns, wallet age, activity consistency, and interaction depth
                 </div>
               </div>
             </div>
@@ -436,44 +480,61 @@ export default function Home() {
         </section>
 
         {/* CTA Section */}
-        <section className="px-4 py-20 relative overflow-hidden">
-          {/* Animated background elements */}
-          <div className="absolute inset-0 opacity-25">
-            <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-[#c41e3a] rounded-full blur-3xl animate-pulse"></div>
-            <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-[#d4af37] rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
-          </div>
+        <section className="relative py-32 px-6 bg-black">
+          <div className="max-w-4xl mx-auto text-center">
+            {/* Background Glow */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl"></div>
+            </div>
 
-          <div className="max-w-4xl mx-auto text-center relative z-10">
-            <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 gradient-text">
-              Ready to Prove You&apos;re Human?
-            </h2>
-            <div className="h-1 w-48 mx-auto mb-8 bg-gradient-to-r from-transparent via-[#c41e3a] to-transparent"></div>
+            <div className="relative z-10">
+              <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                Ready to Prove Your Humanity?
+              </h2>
+              <p className="text-xl text-gray-400 mb-12 max-w-2xl mx-auto">
+                Join the privacy-preserving human verification revolution. No identity disclosure,
+                just proof of being human.
+              </p>
 
-            <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-2xl mx-auto">
-              Start verifying your humanity with <span className="text-[#c41e3a]">privacy-preserving</span> zero-knowledge proofs
-            </p>
+              <div className="flex flex-col sm:flex-row gap-6 justify-center">
+                <button
+                  onClick={() => router.push("/cex-verify")}
+                  className="px-10 py-5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 rounded-xl transition-all transform hover:scale-105 shadow-lg shadow-cyan-500/30 text-lg font-semibold flex items-center justify-center gap-2"
+                >
+                  <Fingerprint className="w-6 h-6" />
+                  <span>Verify Now</span>
+                </button>
+                <button
+                  onClick={() => router.push("/onchain-verify")}
+                  className="px-10 py-5 border-2 border-cyan-500 hover:bg-cyan-500/10 rounded-xl transition-all transform hover:scale-105 text-lg font-semibold"
+                >
+                  Onchain Analysis
+                </button>
+              </div>
 
-            <div className="flex flex-col sm:flex-row gap-6 justify-center">
-              <button
-                onClick={() => router.push("/cex-verify")}
-                className="group relative px-10 py-5 bg-gradient-to-br from-[#1a1a1a] to-black border-2 border-[#c41e3a] text-[#c41e3a] rounded-lg font-bold text-lg uppercase tracking-wider overflow-hidden transition-all duration-300 hover:shadow-[0_0_40px_rgba(196,30,58,0.7)] hover:scale-105 hover:border-[#d4af37] hover:text-[#d4af37]"
-              >
-                <span className="relative z-10">Get Started</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-[#c41e3a]/15 to-[#d4af37]/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              </button>
-              <a
-                href="https://reclaimprotocol.org"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative px-10 py-5 bg-gradient-to-br from-[#1a1a1a] to-black border-2 border-[#d4af37] text-[#d4af37] rounded-lg font-bold text-lg uppercase tracking-wider overflow-hidden transition-all duration-300 hover:shadow-[0_0_40px_rgba(212,175,55,0.7)] hover:scale-105 hover:border-[#c41e3a] hover:text-[#c41e3a]"
-              >
-                <span className="relative z-10">Learn More</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-[#d4af37]/15 to-[#c41e3a]/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              </a>
+              <div className="mt-12 grid grid-cols-3 gap-8 max-w-2xl mx-auto">
+                <div className="text-center">
+                  <Key className="w-8 h-8 text-cyan-400 mx-auto mb-2" />
+                  <div className="text-sm text-gray-500">Zero-Knowledge</div>
+                </div>
+                <div className="text-center">
+                  <Eye className="w-8 h-8 text-cyan-400 mx-auto mb-2" />
+                  <div className="text-sm text-gray-500">Full Privacy</div>
+                </div>
+                <div className="text-center">
+                  <Shield className="w-8 h-8 text-cyan-400 mx-auto mb-2" />
+                  <div className="text-sm text-gray-500">Secure</div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
       </div>
+
+      {/* Google Fonts */}
+      <style jsx>{`
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700;900&display=swap');
+      `}</style>
     </>
   );
 }

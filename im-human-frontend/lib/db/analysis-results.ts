@@ -1,8 +1,8 @@
 import { prisma } from '../prisma'
-import { getOrCreateUser } from './users'
+import { getOrCreateUser, updateUserCompletionFlags } from './users'
 
 /**
- * Save analysis result
+ * Save analysis result (prevents duplicates with upsert)
  */
 export async function saveAnalysisResult(
   walletAddress: string,
@@ -16,8 +16,18 @@ export async function saveAnalysisResult(
   // Ensure user exists
   await getOrCreateUser(walletAddress)
 
-  return await prisma.analysisResult.create({
-    data: {
+  const result = await prisma.analysisResult.upsert({
+    where: { walletAddress },
+    update: {
+      humanScore,
+      successRate,
+      totalTransactions,
+      successfulTransactions,
+      failedTransactions,
+      aiAnalysis,
+      createdAt: new Date(),
+    },
+    create: {
       walletAddress,
       humanScore,
       successRate,
@@ -27,26 +37,30 @@ export async function saveAnalysisResult(
       aiAnalysis,
     },
   })
+
+  // Update user completion flag
+  await updateUserCompletionFlags(walletAddress, {
+    hasCompletedAnalysis: true,
+  })
+
+  return result
 }
 
 /**
- * Get latest analysis result for a wallet
+ * Get analysis result for a wallet
  */
-export async function getLatestAnalysisResult(walletAddress: string) {
-  return await prisma.analysisResult.findFirst({
+export async function getAnalysisResult(walletAddress: string) {
+  return await prisma.analysisResult.findUnique({
     where: { walletAddress },
-    orderBy: { createdAt: 'desc' },
   })
 }
 
 /**
- * Get all analysis results for a wallet
+ * Check if wallet has analysis
  */
-export async function getAllAnalysisResults(walletAddress: string) {
-  return await prisma.analysisResult.findMany({
-    where: { walletAddress },
-    orderBy: { createdAt: 'desc' },
-  })
+export async function hasAnalysisResult(walletAddress: string): Promise<boolean> {
+  const result = await getAnalysisResult(walletAddress)
+  return result !== null
 }
 
 /**
@@ -61,5 +75,22 @@ export async function getAnalysisResultsByScoreRange(minScore: number, maxScore:
       },
     },
     orderBy: { humanScore: 'desc' },
+  })
+}
+
+/**
+ * Get top human scores
+ */
+export async function getTopHumanScores(limit: number = 10) {
+  return await prisma.analysisResult.findMany({
+    orderBy: { humanScore: 'desc' },
+    take: limit,
+    include: {
+      user: {
+        select: {
+          walletAddress: true,
+        },
+      },
+    },
   })
 }
