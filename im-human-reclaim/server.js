@@ -17,12 +17,6 @@ app.use(express.urlencoded({ extended: true }));
 // Store sessions in memory (in production, use Redis or database)
 const sessions = new Map();
 
-// ============================================
-// BINANCE API HELPER FUNCTIONS (OPTIONAL)
-// ============================================
-// NOTE: Binance API credentials are OPTIONAL and only needed for direct API testing
-// Reclaim Protocol will fetch KYC data through user's browser, not through API
-
 /**
  * Generate Binance API signature
  */
