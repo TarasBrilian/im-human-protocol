@@ -168,10 +168,6 @@ app.get('/api/reclaim/init', async (req, res) => {
  */
 app.post('/api/reclaim/callback', async (req, res) => {
   try {
-    console.log('Received callback from Reclaim Protocol');
-    console.log('Request body:', JSON.stringify(req.body, null, 2));
-    console.log('Request headers:', req.headers);
-
     // Handle different body formats
     let proofs;
 
@@ -188,7 +184,6 @@ app.post('/api/reclaim/callback', async (req, res) => {
         proofs = req.body.proofs;
       } else if (req.body.session) {
         // Handle session update format
-        console.log('Session update received:', req.body);
         const { sessionId, status } = req.body;
 
         if (sessions.has(sessionId)) {
@@ -196,8 +191,6 @@ app.post('/api/reclaim/callback', async (req, res) => {
           session.status = status === 'PROOF_GENERATION_SUCCESS' ? 'PENDING' : status;
           session.updatedAt = new Date();
           sessions.set(sessionId, session);
-
-          console.log(`Session ${sessionId} updated to status: ${status}`);
         }
 
         return res.json({ success: true, message: 'Session updated' });
@@ -206,19 +199,11 @@ app.post('/api/reclaim/callback', async (req, res) => {
         proofs = [req.body];
       }
     } else {
-      console.error('Invalid body format:', req.body);
       return res.status(400).json({
         success: false,
         error: 'Invalid request body format'
       });
     }
-
-    // if (!proofs || proofs.length === 0) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     error: 'No proofs provided'
-    //   });
-    // }
 
     // Verify each proof
     const verifiedProofs = [];
@@ -262,11 +247,6 @@ app.post('/api/reclaim/callback', async (req, res) => {
             session.verifiedAt = new Date();
             sessions.set(sessionId, session);
           }
-
-          console.log('Proof verified successfully:', {
-            address: contextAddress,
-            kycStatus: kycData.kycStatus
-          });
         } else {
           verifiedProofs.push({
             valid: false,
