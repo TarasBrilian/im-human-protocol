@@ -18,7 +18,8 @@ export function useReclaim() {
         params.append('userAddress', walletAddress);
       }
 
-      const response = await fetch(`http://localhost:3001/api/reclaim/init?${params.toString()}`);
+      const apiUrl = process.env.NEXT_PUBLIC_RECLAIM_API_URL;
+      const response = await fetch(`${apiUrl}/api/reclaim/init?${params.toString()}`);
       const data = await response.json();
 
       if (!data.success || !data.data) {
